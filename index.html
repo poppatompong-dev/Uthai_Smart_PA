@@ -282,6 +282,11 @@
             display: none;
         }
 
+        /* SweetAlert permission warnings - always on top */
+        .swal-top-layer {
+            z-index: 99999 !important;
+        }
+
         /* LEFT SIDEBAR STYLES */
         :root {
             --sidebar-width: 280px;
@@ -659,7 +664,7 @@
                 <button onclick="showView('public-report'); closeSidebarMobile();" data-view="public-report">
                     <i class="fas fa-tools"></i> Smart Repair (แจ้งซ่อม)
                 </button>
-                <button onclick="window.openAnnouncementModal(); closeSidebarMobile();">
+                <button onclick="showView('citizen-voice'); closeSidebarMobile();" data-view="citizen-voice">
                     <i class="fas fa-bullhorn"></i> Citizen Voice (ฝากข่าว)
                 </button>
             </div>
@@ -762,7 +767,7 @@
                                 class="public-only-ui bg-gradient-to-r from-blue-700 to-blue-900 text-white px-10 py-4 rounded-3xl font-bold shadow-2xl hover:shadow-blue-500/30 transition transform hover:-translate-y-1 active:scale-95">
                                 <i class="fas fa-bullhorn mr-2"></i> แจ้งเหตุขัดข้อง
                             </button>
-                            <button onclick="window.openAnnouncementModal()"
+                            <button onclick="showView('citizen-voice')"
                                 class="public-only-ui bg-white/90 backdrop-blur border-2 border-blue-200 text-blue-900 px-10 py-4 rounded-3xl font-bold hover:border-blue-800 transition active:scale-95">
                                 <i class="fas fa-newspaper mr-2"></i> ฝากข่าวประชาสัมพันธ์
                             </button>
@@ -883,11 +888,11 @@
                         <i class="fas fa-map-location-dot"></i> แผนที่
                     </button>
                     <button onclick="activateHubTab('data')" id="hub-tab-data"
-                        class="hub-tab-btn flex items-center gap-2 px-6 py-3 rounded-2xl font-bold text-sm transition whitespace-nowrap">
+                        class="hub-tab-btn admin-only-ui hidden flex items-center gap-2 px-6 py-3 rounded-2xl font-bold text-sm transition whitespace-nowrap">
                         <i class="fas fa-list-ol"></i> ทะเบียน
                     </button>
                     <button onclick="activateHubTab('dashboard')" id="hub-tab-dashboard"
-                        class="hub-tab-btn flex items-center gap-2 px-6 py-3 rounded-2xl font-bold text-sm transition whitespace-nowrap">
+                        class="hub-tab-btn admin-only-ui hidden flex items-center gap-2 px-6 py-3 rounded-2xl font-bold text-sm transition whitespace-nowrap">
                         <i class="fas fa-chart-pie"></i> ข้อมูลเชิงลึก
                     </button>
                 </div>
@@ -1584,6 +1589,98 @@
                 <p class="text-center text-xs text-slate-400 pb-8">
                     ระบบจัดการเสียงตามสาย เทศบาลเมืองอุทัยธานี<br>
                     <span class="text-blue-500">Uthai Thani Smart PA</span>
+                </p>
+            </div>
+        </section>
+
+        <!-- 7B. CITIZEN VOICE (Public SPA View) -->
+        <section id="view-citizen-voice" class="spa-view p-6 md:p-12">
+            <div class="max-w-lg mx-auto space-y-6">
+                <!-- Header -->
+                <div class="bg-gradient-to-br from-purple-600 to-indigo-700 text-white p-8 rounded-[2.5rem] shadow-2xl">
+                    <div class="flex items-center gap-4 mb-2">
+                        <div class="w-14 h-14 bg-white/20 rounded-2xl flex items-center justify-center text-2xl">
+                            <i class="fas fa-heart"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-2xl font-black tracking-tight">Citizen Voice</h2>
+                            <p class="text-purple-200 text-xs font-bold uppercase tracking-widest">
+                                พื้นที่ประชาสัมพันธ์เพื่อชุมชน</p>
+                        </div>
+                    </div>
+                    <button onclick="showView('landing')"
+                        class="inline-flex items-center gap-2 text-white/80 hover:text-white font-bold text-sm mt-2">
+                        <i class="fas fa-arrow-left"></i> กลับหน้าหลัก
+                    </button>
+                </div>
+
+                <!-- Info Banner -->
+                <div class="bg-purple-50 p-5 rounded-2xl border border-purple-100">
+                    <p class="text-purple-800 font-bold text-sm">"เรื่องราวดีๆ เริ่มต้นที่คุณ"</p>
+                    <p class="text-purple-600 text-xs mt-1">แบ่งปันข่าวสาร กิจกรรม หรือเรื่องราวน่าสนใจในชุมชน
+                        ผ่านช่องทางการสื่อสารของเทศบาล</p>
+                </div>
+
+                <!-- Form -->
+                <div class="bg-white/80 backdrop-blur p-8 rounded-[2rem] border border-slate-100 shadow-lg">
+                    <form id="citizenVoiceForm" onsubmit="window.submitCitizenVoice(event)" class="space-y-5">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-500 uppercase mb-2">หัวข้อ/เรื่อง <span
+                                    class="text-red-500">*</span></label>
+                            <input type="text" id="cv-title" placeholder="เช่น งานลอยกระทง, ตลาดนัดสีเขียว" required
+                                class="w-full bg-slate-50 border border-slate-200 p-4 rounded-2xl outline-none focus:ring-2 focus:ring-purple-500 font-medium">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-500 uppercase mb-2">รายละเอียด
+                                (สั้นๆ)</label>
+                            <textarea id="cv-detail" rows="3" placeholder="วันที่ เวลา สถานที่..."
+                                class="w-full bg-slate-50 border border-slate-200 p-4 rounded-2xl outline-none focus:ring-2 focus:ring-purple-500 font-medium resize-none"></textarea>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-500 uppercase mb-2">ผู้ฝาก/หน่วยงาน</label>
+                            <input type="text" id="cv-contact" placeholder="ชื่อ-นามสกุล, เบอร์โทร (ไม่บังคับ)"
+                                class="w-full bg-slate-50 border border-slate-200 p-4 rounded-2xl outline-none focus:ring-2 focus:ring-purple-500 font-medium">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-500 uppercase mb-2">แนบไฟล์
+                                (ไม่บังคับ)</label>
+                            <div id="cv-file-dropzone"
+                                class="w-full bg-slate-50 border-2 border-dashed border-slate-300 p-6 rounded-2xl text-center cursor-pointer hover:border-purple-400 hover:bg-purple-50/50 transition"
+                                onclick="document.getElementById('cv-files').click()">
+                                <i class="fas fa-cloud-upload-alt text-3xl text-slate-300 mb-2"></i>
+                                <p class="text-sm text-slate-400 font-medium">คลิกหรือลากไฟล์มาวาง</p>
+                                <p class="text-[10px] text-slate-400 mt-1">รูปภาพ (JPG, PNG, GIF) หรือ PDF • สูงสุด 3
+                                    ไฟล์ • ไม่เกิน 5 MB/ไฟล์</p>
+                                <input type="file" id="cv-files" multiple accept=".jpg,.jpeg,.png,.gif,.pdf"
+                                    class="hidden">
+                            </div>
+                            <div id="cv-file-preview" class="mt-3 space-y-2"></div>
+                        </div>
+
+                        <!-- Feedback / Suggestion -->
+                        <div class="border-t border-slate-100 pt-5">
+                            <label class="block text-xs font-bold text-slate-500 uppercase mb-2"><i
+                                    class="fas fa-lightbulb text-amber-500 mr-1"></i> ข้อเสนอแนะ/ความคิดเห็น
+                                (Feedback)</label>
+                            <textarea id="cv-feedback" rows="2" placeholder="หากมีข้อเสนอแนะใดๆ สามารถพิมพ์ได้ที่นี่..."
+                                class="w-full bg-amber-50/50 border border-amber-200 p-4 rounded-2xl outline-none focus:ring-2 focus:ring-amber-400 font-medium resize-none text-sm"></textarea>
+                        </div>
+
+                        <button type="submit"
+                            class="w-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white py-5 rounded-2xl font-black shadow-2xl active:scale-95 transition hover:shadow-purple-500/30 flex items-center justify-center gap-2 text-lg">
+                            <i class="fas fa-paper-plane"></i> ส่งฝากประกาศ
+                        </button>
+                    </form>
+                </div>
+
+                <div class="bg-blue-50 p-4 rounded-xl border border-blue-100">
+                    <p class="text-blue-700 text-sm font-medium"><i class="fas fa-info-circle mr-2"></i>
+                        การฝากประชาสัมพันธ์จะต้องได้รับการอนุมัติจากเจ้าหน้าที่ก่อนออกอากาศ</p>
+                </div>
+
+                <p class="text-center text-xs text-slate-400 pb-8">
+                    ระบบจัดการเสียงตามสาย เทศบาลเมืองอุทัยธานี<br>
+                    <span class="text-purple-500">Uthai Thani Smart PA • Citizen Voice</span>
                 </p>
             </div>
         </section>
@@ -3606,6 +3703,11 @@
             // 3. Handle hub views logic - Redirect to tabbed hub for consolidated experience
             const hubMapping = { 'map': 'map', 'data': 'data', 'dashboard': 'dashboard' };
             if (hubMapping[viewId]) {
+                // Public access restriction: redirect non-logged-in users to map only
+                const isLoggedIn = currentUser && (currentUser.role === 'Admin' || currentUser.role === 'Officer');
+                if (!isLoggedIn && (viewId === 'data' || viewId === 'dashboard')) {
+                    viewId = 'map';
+                }
                 showHub();
                 activateHubTab(hubMapping[viewId]);
                 // Initialize specific view content immediately
@@ -3860,7 +3962,7 @@ function uploadEvidence(base64Data, fileName, pointNumber) {
                 });
 
                 const m = L.marker([lat, lng], { icon: icon }).addTo(mapInstance);
-                m.bindPopup(`<div class="p-3"><strong>#${p.Number}</strong><br>${p.Position}</div>`);
+                m.bindPopup(`<div class="p-3"><strong>#${p.Number}</strong><br>${p.Position}<br><a href="https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}" target="_blank" style="display:inline-flex;align-items:center;gap:4px;margin-top:8px;padding:6px 12px;background:#16a34a;color:white;border-radius:8px;text-decoration:none;font-weight:700;font-size:12px;"><i class="fas fa-location-arrow"></i> นำทาง</a></div>`);
                 markers.push(m);
             });
         }
@@ -4245,6 +4347,10 @@ function uploadEvidence(base64Data, fileName, pointNumber) {
 
         // --- Report Modal Logic ---
         window.openReportModal = function () {
+            if (!currentUser) {
+                Swal.fire({ icon: 'warning', title: 'ต้องเข้าสู่ระบบ', text: 'กรุณาเข้าสู่ระบบเพื่อดูรายงาน', confirmButtonText: 'เข้าสู่ระบบ', showCancelButton: true, cancelButtonText: 'ยกเลิก', customClass: { container: 'swal-top-layer' } }).then(r => { if (r.isConfirmed) window.openLogin(); });
+                return;
+            }
             if (!window.speakerPoints) return;
 
             // Apply current filters to the report data
@@ -4485,6 +4591,7 @@ function uploadEvidence(base64Data, fileName, pointNumber) {
             const user = window.appUsers.find(au => au.username === u && au.password === p);
             if (user) {
                 currentUser = user;
+                window.currentUser = user; // Mirror to window for cross-script access
                 ['loginBtn', 'loginModal'].forEach(id => {
                     const el = document.getElementById(id);
                     if (el) el.classList.add('hidden');
@@ -4547,6 +4654,7 @@ function uploadEvidence(base64Data, fileName, pointNumber) {
                         showConfirmButton: false
                     }).then(() => {
                         currentUser = null;
+                        window.currentUser = null; // Mirror to window
                         // Toggle Admin/Public UI elements back
                         document.querySelectorAll('.admin-only-ui').forEach(el => el.classList.add('hidden'));
                         document.querySelectorAll('.public-only-ui').forEach(el => el.classList.remove('hidden'));
@@ -5274,6 +5382,8 @@ function uploadEvidence(base64Data, fileName, pointNumber) {
         window.printQRCodeCard = function (pointId, pointNumber, location) {
             const baseUrl = window.location.origin + window.location.pathname;
             const reportUrl = `${baseUrl}?p=${pointId}`;
+            const point = (window.speakerPoints || []).find(p => p.id === pointId);
+            const communityName = point && point.Community ? point.Community : '';
 
             const printWindow = window.open('', '_blank');
             printWindow.document.write(`
@@ -5283,41 +5393,50 @@ function uploadEvidence(base64Data, fileName, pointNumber) {
                         <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;700;900&display=swap" rel="stylesheet">
                         <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"><\/script>
                         <style>
-                            body { font-family: 'Kanit', sans-serif; text-align: center; padding: 40px; color: #1e293b; }
-                            .card { border: 15px solid #1e40af; border-radius: 40px; padding: 60px; max-width: 600px; margin: auto; }
-                            .logo { height: 100px; margin-bottom: 20px; }
-                            h1 { font-size: 48px; font-weight: 900; margin: 0; color: #1e40af; }
-                            h2 { font-size: 24px; color: #64748b; margin-top: 5px; }
-                            .qr-container { background: #f8fafc; padding: 40px; border-radius: 30px; margin: 40px auto; width: fit-content; border: 2px solid #e2e8f0; }
-                            .instructions { font-size: 28px; font-weight: 700; line-height: 1.4; }
-                            .point-info { background: #1e40af; color: white; padding: 10px 30px; border-radius: 15px; display: inline-block; font-size: 20px; font-weight: 700; margin-top: 20px; }
-                            .footer { margin-top: 50px; font-size: 14px; color: #94a3b8; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; }
-                            @media print { .no-print { display: none; } }
+                            body { font-family: 'Kanit', sans-serif; text-align: center; padding: 30px; color: #1e293b; margin: 0; }
+                            .card { border: 15px solid #1e40af; border-radius: 40px; padding: 50px 40px; max-width: 600px; margin: auto; }
+                            .logo { height: 90px; margin-bottom: 15px; }
+                            h1 { font-size: 42px; font-weight: 900; margin: 0; color: #1e40af; }
+                            h2 { font-size: 20px; color: #64748b; margin-top: 5px; margin-bottom: 0; }
+                            .qr-container { background: #f8fafc; padding: 35px; border-radius: 30px; margin: 30px auto; width: fit-content; border: 3px solid #1e40af20; }
+                            .point-badge { background: #1e40af; color: white; padding: 15px 40px; border-radius: 20px; display: inline-block; font-size: 36px; font-weight: 900; margin: 20px 0 10px; letter-spacing: 2px; }
+                            .location-name { font-size: 18px; font-weight: 700; color: #334155; margin: 5px 0; }
+                            .community-name { font-size: 14px; font-weight: 600; color: #64748b; margin-bottom: 15px; }
+                            .instructions { font-size: 26px; font-weight: 700; line-height: 1.5; color: #0f172a; margin: 20px 0 10px; }
+                            .warning { background: #fef3c7; border: 2px solid #f59e0b; border-radius: 15px; padding: 12px 20px; margin: 15px auto; max-width: 400px; }
+                            .warning p { font-size: 14px; font-weight: 700; color: #92400e; margin: 0; }
+                            .footer { margin-top: 30px; font-size: 12px; color: #94a3b8; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; }
+                            @media print { .no-print { display: none; } @page { margin: 10mm; } }
                             button { background: #1e40af; color: white; border: none; padding: 15px 40px; border-radius: 15px; font-size: 20px; font-weight: 700; cursor: pointer; margin-top: 20px; }
                         </style>
                     </head>
                     <body>
                         <div class="no-print">
-                            <button onclick="window.print()">พิมพ์ใบประกาศ (Print)</button>
-                            <p>แนะนำให้พิมพ์ขนาด A4 หรือ A5</p>
+                            <button onclick="window.print()">\u0e1e\u0e34\u0e21\u0e1e\u0e4c\u0e43\u0e1a\u0e1b\u0e23\u0e30\u0e01\u0e32\u0e28 (Print)</button>
+                            <p>\u0e41\u0e19\u0e30\u0e19\u0e33\u0e43\u0e2b\u0e49\u0e1e\u0e34\u0e21\u0e1e\u0e4c\u0e02\u0e19\u0e32\u0e14 A4 \u0e2b\u0e23\u0e37\u0e2d A5 \u0e41\u0e25\u0e30\u0e2b\u0e38\u0e49\u0e21\u0e1e\u0e25\u0e32\u0e2a\u0e15\u0e34\u0e01\u0e01\u0e31\u0e19\u0e19\u0e49\u0e33\u0e01\u0e48\u0e2d\u0e19\u0e15\u0e34\u0e14\u0e15\u0e31\u0e49\u0e07</p>
                             <hr style="margin: 30px 0; border: none; border-top: 1px solid #eee;">
                         </div>
                         <div class="card">
                             <img src="https://images.weserv.nl/?url=img5.pic.in.th/file/secure-sv1/logo458ee4aa05680920.jpg" 
                                 crossorigin="anonymous"
                                 class="logo">
-                            <h1>เทศบาลเมืองอุทัยธานี</h1>
+                            <h1>\u0e40\u0e17\u0e28\u0e1a\u0e32\u0e25\u0e40\u0e21\u0e37\u0e2d\u0e07\u0e2d\u0e38\u0e17\u0e31\u0e22\u0e18\u0e32\u0e19\u0e35</h1>
                             <h2>Smart Public Address System</h2>
                             <div class="qr-container" id="qrcode"></div>
-                            <div class="instructions">พบปัญหาลำโพงขัดข้อง?<br>สแกนเพื่อแจ้งซ่อมได้ทันที</div>
-                            <div class="point-info">จุดติดตั้งที่ #${pointNumber} - ${location}</div>
-                            <div class="footer">Uthai Thani Smart PA • powered by cloud realtime sync</div>
+                            <div class="point-badge">#${pointNumber}</div>
+                            <div class="location-name">${location}</div>
+                            ${communityName ? '<div class="community-name">\u0e0a\u0e38\u0e21\u0e0a\u0e19: ' + communityName + '</div>' : ''}
+                            <div class="instructions">\u0e1e\u0e1a\u0e1b\u0e31\u0e0d\u0e2b\u0e32\u0e25\u0e33\u0e42\u0e1e\u0e07\u0e02\u0e31\u0e14\u0e02\u0e49\u0e2d\u0e07?<br>\u0e2a\u0e41\u0e01\u0e19\u0e40\u0e1e\u0e37\u0e48\u0e2d\u0e41\u0e08\u0e49\u0e07\u0e0b\u0e48\u0e2d\u0e21\u0e44\u0e14\u0e49\u0e17\u0e31\u0e19\u0e17\u0e35</div>
+                            <div class="warning">
+                                <p>\u26a0\ufe0f \u0e01\u0e23\u0e38\u0e13\u0e32\u0e15\u0e23\u0e27\u0e08\u0e2a\u0e2d\u0e1a\u0e2b\u0e21\u0e32\u0e22\u0e40\u0e25\u0e02\u0e08\u0e38\u0e14 #${pointNumber} \u0e01\u0e48\u0e2d\u0e19\u0e41\u0e08\u0e49\u0e07\u0e0b\u0e48\u0e2d\u0e21</p>
+                            </div>
+                            <div class="footer">Uthai Thani Smart PA \u2022 Powered by Cloud Realtime Sync</div>
                         </div>
                         <script>
                             new QRCode(document.getElementById("qrcode"), {
                                 text: "${reportUrl}",
-                                width: 280,
-                                height: 280,
+                                width: 320,
+                                height: 320,
                                 colorDark: "#1e40af",
                                 colorLight: "#ffffff",
                                 correctLevel: QRCode.CorrectLevel.H
@@ -5456,6 +5575,10 @@ function uploadEvidence(base64Data, fileName, pointNumber) {
 
         // --- QR CODE GENERATION ---
         window.generateQRCodeForPoint = function (pointId, pointNumber) {
+            if (!currentUser || (currentUser.role !== 'Admin' && currentUser.role !== 'Officer')) {
+                Swal.fire({ icon: 'warning', title: 'สิทธิ์ไม่เพียงพอ', text: 'เฉพาะเจ้าหน้าที่เท่านั้นที่สามารถสร้าง QR Code ได้', customClass: { container: 'swal-top-layer' } });
+                return;
+            }
             const baseUrl = window.location.origin + window.location.pathname;
             const reportUrl = `${baseUrl}?p=${pointId}`;
             const point = (window.speakerPoints || []).find(p => p.id === pointId);
@@ -5646,6 +5769,86 @@ function uploadEvidence(base64Data, fileName, pointNumber) {
                 window.closeAnnouncementModal();
             } catch (error) {
                 console.error("Submit Announcement Error:", error);
+                Swal.fire({ icon: 'error', title: 'เกิดข้อผิดพลาด', text: error.message });
+            }
+        };
+
+        // --- CITIZEN VOICE SPA FORM SUBMIT ---
+        let citizenVoiceFiles = [];
+
+        // File input handler for citizen voice
+        document.addEventListener('DOMContentLoaded', () => {
+            const cvFileInput = document.getElementById('cv-files');
+            if (cvFileInput) {
+                cvFileInput.addEventListener('change', (e) => {
+                    const newFiles = Array.from(e.target.files).slice(0, 3 - citizenVoiceFiles.length);
+                    citizenVoiceFiles = [...citizenVoiceFiles, ...newFiles].slice(0, 3);
+                    renderCVFilePreview();
+                });
+            }
+        });
+
+        function renderCVFilePreview() {
+            const container = document.getElementById('cv-file-preview');
+            if (!container) return;
+            container.innerHTML = citizenVoiceFiles.map((f, i) => `
+                <div class="flex items-center justify-between bg-purple-50 border border-purple-100 p-3 rounded-xl">
+                    <span class="text-xs font-medium text-purple-700 truncate"><i class="fas fa-file mr-2"></i>${f.name}</span>
+                    <button type="button" onclick="window.removeCVFile(${i})" class="text-red-400 hover:text-red-600 ml-2"><i class="fas fa-times"></i></button>
+                </div>
+            `).join('');
+        }
+
+        window.removeCVFile = function (index) {
+            citizenVoiceFiles.splice(index, 1);
+            renderCVFilePreview();
+        };
+
+        window.submitCitizenVoice = async function (e) {
+            e.preventDefault();
+            const title = document.getElementById('cv-title').value.trim();
+            if (!title) {
+                Swal.fire({ icon: 'warning', title: 'กรุณากรอกหัวข้อ' });
+                return;
+            }
+
+            Swal.fire({ title: 'กำลังส่งข้อมูล...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+
+            let attachments = [];
+            if (citizenVoiceFiles.length > 0) {
+                try {
+                    attachments = await Promise.all(citizenVoiceFiles.map(f => fileToBase64(f)));
+                } catch (err) {
+                    Swal.fire({ icon: 'error', title: 'เกิดข้อผิดพลาดในการอ่านไฟล์' });
+                    return;
+                }
+            }
+
+            const annData = {
+                title: title,
+                detail: document.getElementById('cv-detail').value || '',
+                contact: document.getElementById('cv-contact').value || '',
+                feedback: document.getElementById('cv-feedback').value || '',
+                attachments: attachments,
+                status: 'pending',
+                source: 'citizen-voice',
+                createdAt: new Date().toISOString()
+            };
+            try {
+                const annRef = collection(db, 'artifacts', appId, 'public', 'data', 'announcements');
+                await addDoc(annRef, annData);
+                Swal.fire({
+                    icon: 'success',
+                    title: 'ส่งฝากประกาศสำเร็จ!',
+                    html: '<p>ขอบคุณสำหรับข้อมูล<br>ข้อความจะแสดงหลังผ่านการตรวจสอบ</p>',
+                    confirmButtonColor: '#7c3aed'
+                });
+                // Reset form
+                document.getElementById('citizenVoiceForm').reset();
+                citizenVoiceFiles = [];
+                renderCVFilePreview();
+            } catch (error) {
+                console.error("Submit Citizen Voice Error:", error);
                 Swal.fire({ icon: 'error', title: 'เกิดข้อผิดพลาด', text: error.message });
             }
         };
@@ -6739,6 +6942,10 @@ function uploadEvidence(base64Data, fileName, pointNumber) {
         let advFilteredData = [];
 
         window.openAdvancedReportModal = function () {
+            if (!currentUser) {
+                Swal.fire({ icon: 'warning', title: 'ต้องเข้าสู่ระบบ', text: 'กรุณาเข้าสู่ระบบเพื่อดูรายงานขั้นสูง', confirmButtonText: 'เข้าสู่ระบบ', showCancelButton: true, cancelButtonText: 'ยกเลิก', customClass: { container: 'swal-top-layer' } }).then(r => { if (r.isConfirmed) window.openLogin(); });
+                return;
+            }
             document.getElementById('advancedReportModal').classList.remove('hidden');
             // Populate OLT dropdown dynamically
             populateOLTDropdowns();
@@ -7038,6 +7245,22 @@ function uploadEvidence(base64Data, fileName, pointNumber) {
                             `).join('')}
                         </tbody>
                     </table>
+                    <div style="margin-top: 60px; display: flex; justify-content: space-around; page-break-inside: avoid;">
+                        <div style="text-align: center; width: 40%;">
+                            <div style="height: 40px; border-bottom: 1px dotted #94a3b8; width: 90%; margin: 0 auto;"></div>
+                            <p style="font-size: 11px; font-weight: 700; margin-top: 12px;">ลงชื่อ ........................................................... ผู้รายงาน</p>
+                            <p style="font-size: 10px; color: #64748b; margin-top: 8px;">( ........................................................... )</p>
+                            <p style="font-size: 9px; color: #94a3b8; margin-top: 4px; text-transform: uppercase; font-weight: 700; letter-spacing: 2px;">เจ้าหน้าที่ผู้บันทึกข้อมูล/ผู้รายงาน</p>
+                            <p style="font-size: 11px; font-weight: 700; margin-top: 16px;">วันที่ .......... / .......... / ..........</p>
+                        </div>
+                        <div style="text-align: center; width: 40%;">
+                            <div style="height: 40px; border-bottom: 1px dotted #94a3b8; width: 90%; margin: 0 auto;"></div>
+                            <p style="font-size: 11px; font-weight: 700; margin-top: 12px;">ลงชื่อ ........................................................... ผู้อนุมัติ</p>
+                            <p style="font-size: 10px; color: #64748b; margin-top: 8px;">( ........................................................... )</p>
+                            <p style="font-size: 9px; color: #94a3b8; margin-top: 4px; text-transform: uppercase; font-weight: 700; letter-spacing: 2px;">หัวหน้าหน่วยงาน/ผู้อนุมัติตรวจสอบ</p>
+                            <p style="font-size: 11px; font-weight: 700; margin-top: 16px;">วันที่ .......... / .......... / ..........</p>
+                        </div>
+                    </div>
                     <div class="footer">
                         Uthai Thani Smart PA System &bull; Advanced Report Center &bull; Powered by Cloud Realtime Sync
                     </div>
