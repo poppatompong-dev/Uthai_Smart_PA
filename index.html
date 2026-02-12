@@ -682,6 +682,10 @@
                 <button onclick="showView('dashboard'); closeSidebarMobile();" data-view="dashboard">
                     <i class="fas fa-chart-pie"></i> ข้อมูลเชิงลึก (Insights)
                 </button>
+                <button onclick="showHub(); activateHubTab('data'); closeSidebarMobile();" id="nav-registry"
+                    data-view="data">
+                    <i class="fas fa-list-ul"></i> ทะเบียนพิกัด
+                </button>
                 <button onclick="showView('tickets'); closeSidebarMobile();" id="nav-tickets" data-view="tickets">
                     <i class="fas fa-ticket"></i> รายการแจ้งซ่อม (Tickets)
                 </button>
@@ -4111,7 +4115,14 @@ function uploadEvidence(base64Data, fileName, pointNumber) {
         // --- FULL DETAIL MODAL ---
         window.openFullDetailModal = function (id) {
             const p = window.speakerPoints.find(item => item.id == id);
-            if (!p) return;
+            if (!p) {
+                console.error("Point not found:", id);
+                return;
+            }
+
+            // Show the modal
+            const modal = document.getElementById('fullDetailModal');
+            if (modal) modal.classList.remove('hidden');
 
             // Store for QR Code generation
             window.currentDetailPointId = p.id;
@@ -4925,7 +4936,9 @@ function uploadEvidence(base64Data, fileName, pointNumber) {
 
         window.openPointModal = function (pointId = null) {
             if (!currentUser) return;
+            // Show the modal
             const m = document.getElementById('pointModal');
+            if (m) m.classList.remove('hidden');
             const form = document.getElementById('pointForm');
             form.reset(); window.setPointTab('general');
             document.getElementById('modalTitle').innerText = pointId ? "จัดการข้อมูลพิกัด" : "ลงทะเบียนจุดใหม่";
@@ -5139,7 +5152,10 @@ function uploadEvidence(base64Data, fileName, pointNumber) {
                 const checkData = setInterval(() => {
                     if (window.speakerPoints && window.speakerPoints.length > 0) {
                         clearInterval(checkData);
-                        const point = window.speakerPoints.find(p => p.id === pointId || String(p.Number) === pointId);
+                        // Search by ID first, then by Number as fallback
+                        // Deep search: match by Firestore ID or Point Number
+                        const point = window.speakerPoints.find(p => p.id === pointId) ||
+                            window.speakerPoints.find(p => String(p.Number) === String(pointId));
                         if (point) {
                             document.getElementById('pr-point-id').value = point.id;
                             document.getElementById('public-report-point-number').innerText = `#${point.Number}`;
@@ -5606,7 +5622,7 @@ function uploadEvidence(base64Data, fileName, pointNumber) {
             const point = (window.speakerPoints || []).find(p => p.id === pointId);
             const locationName = point ? point.Position : 'ไม่ระบุตำแหน่ง';
 
-            const isAdmin = window.currentUser && window.currentUser.role === 'Admin';
+            const isAdmin = currentUser && currentUser.role === 'Admin';
             const adminButtons = isAdmin ? `
                 <div class="grid grid-cols-1 gap-3 mt-6">
                     <button id="fd-snapshot-btn" onclick="window.saveQRCodeAsImage()" class="bg-green-600 text-white py-3.5 rounded-2xl font-black shadow-lg hover:bg-green-700 active:scale-95 transition flex items-center justify-center gap-2">
