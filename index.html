@@ -693,7 +693,8 @@
                     data-view="announcements-admin">
                     <i class="fas fa-bullhorn"></i> จัดการประชาสัมพันธ์
                 </button>
-                <button onclick="showView('users'); closeSidebarMobile();" id="nav-users" data-view="users">
+                <button onclick="showView('users'); closeSidebarMobile();" id="nav-users" data-view="users"
+                    class="admin-exclusive">
                     <i class="fas fa-users-gear"></i> ผู้ใช้
                 </button>
                 <div class="border-t border-white/10 my-3"></div>
@@ -949,6 +950,10 @@
                             <button onclick="toggleCoverageLayer()" id="btn-coverage"
                                 class="px-4 py-2 rounded-xl text-xs font-bold text-slate-500 hover:bg-slate-50 transition"><i
                                     class="fas fa-bullseye mr-1"></i> แสดงรัศมีเสียง</button>
+                            <div class="w-px h-6 bg-slate-200 mx-1"></div>
+                            <button onclick="window.exportMapAsImage()" id="btn-export-map"
+                                class="px-4 py-2 rounded-xl text-xs font-bold text-slate-500 hover:bg-emerald-50 hover:text-emerald-600 transition"><i
+                                    class="fas fa-camera mr-1"></i> ส่งออกภาพ</button>
                         </div>
                     </div>
 
@@ -2960,6 +2965,111 @@
                     </div>
                 </div>
 
+                <!-- Column Selector & Grouping -->
+                <div class="bg-indigo-50/50 border-b border-slate-200 p-6">
+                    <div class="flex items-center justify-between mb-3">
+                        <p class="text-[10px] font-black text-indigo-400 uppercase tracking-widest cursor-pointer"
+                            onclick="document.getElementById('adv-col-selector').classList.toggle('hidden')">
+                            <i class="fas fa-columns mr-1"></i> เลือกคอลัมน์ที่ต้องการแสดง (Column Selector)
+                            <i class="fas fa-chevron-down ml-1 text-[8px]"></i>
+                        </p>
+                        <div class="flex gap-2">
+                            <button onclick="window.toggleAllAdvColumns(true)"
+                                class="text-[10px] font-bold text-indigo-600 hover:text-indigo-800 transition px-2 py-1 bg-indigo-100 rounded-lg">
+                                <i class="fas fa-check-double mr-1"></i>เลือกทั้งหมด
+                            </button>
+                            <button onclick="window.toggleAllAdvColumns(false)"
+                                class="text-[10px] font-bold text-slate-500 hover:text-slate-700 transition px-2 py-1 bg-slate-100 rounded-lg">
+                                <i class="fas fa-times mr-1"></i>ยกเลิกทั้งหมด
+                            </button>
+                        </div>
+                    </div>
+                    <div id="adv-col-selector" class="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-2">
+                        <label
+                            class="flex items-center gap-2 bg-white px-3 py-2 rounded-xl border border-slate-100 cursor-pointer hover:border-indigo-300 transition text-xs font-bold text-slate-700">
+                            <input type="checkbox" class="adv-col-check rounded text-indigo-600" data-col="Number"
+                                checked onchange="window.applyAdvancedFilters()"> No.
+                        </label>
+                        <label
+                            class="flex items-center gap-2 bg-white px-3 py-2 rounded-xl border border-slate-100 cursor-pointer hover:border-indigo-300 transition text-xs font-bold text-slate-700">
+                            <input type="checkbox" class="adv-col-check rounded text-indigo-600" data-col="Position"
+                                checked onchange="window.applyAdvancedFilters()"> ตำแหน่ง
+                        </label>
+                        <label
+                            class="flex items-center gap-2 bg-white px-3 py-2 rounded-xl border border-slate-100 cursor-pointer hover:border-indigo-300 transition text-xs font-bold text-slate-700">
+                            <input type="checkbox" class="adv-col-check rounded text-indigo-600" data-col="Latitude"
+                                onchange="window.applyAdvancedFilters()"> Latitude
+                        </label>
+                        <label
+                            class="flex items-center gap-2 bg-white px-3 py-2 rounded-xl border border-slate-100 cursor-pointer hover:border-indigo-300 transition text-xs font-bold text-slate-700">
+                            <input type="checkbox" class="adv-col-check rounded text-indigo-600" data-col="Longitude"
+                                onchange="window.applyAdvancedFilters()"> Longitude
+                        </label>
+                        <label
+                            class="flex items-center gap-2 bg-white px-3 py-2 rounded-xl border border-slate-100 cursor-pointer hover:border-indigo-300 transition text-xs font-bold text-slate-700">
+                            <input type="checkbox" class="adv-col-check rounded text-indigo-600" data-col="Status"
+                                checked onchange="window.applyAdvancedFilters()"> สถานะ
+                        </label>
+                        <label
+                            class="flex items-center gap-2 bg-white px-3 py-2 rounded-xl border border-slate-100 cursor-pointer hover:border-indigo-300 transition text-xs font-bold text-slate-700">
+                            <input type="checkbox" class="adv-col-check rounded text-indigo-600" data-col="InstallType"
+                                checked onchange="window.applyAdvancedFilters()"> ประเภท
+                        </label>
+                        <label
+                            class="flex items-center gap-2 bg-white px-3 py-2 rounded-xl border border-slate-100 cursor-pointer hover:border-indigo-300 transition text-xs font-bold text-slate-700">
+                            <input type="checkbox" class="adv-col-check rounded text-indigo-600" data-col="Speaker_size"
+                                checked onchange="window.applyAdvancedFilters()"> ขนาด (W)
+                        </label>
+                        <label
+                            class="flex items-center gap-2 bg-white px-3 py-2 rounded-xl border border-slate-100 cursor-pointer hover:border-indigo-300 transition text-xs font-bold text-slate-700">
+                            <input type="checkbox" class="adv-col-check rounded text-indigo-600"
+                                data-col="Speakers_amount" checked onchange="window.applyAdvancedFilters()"> จำนวน
+                        </label>
+                        <label
+                            class="flex items-center gap-2 bg-white px-3 py-2 rounded-xl border border-slate-100 cursor-pointer hover:border-indigo-300 transition text-xs font-bold text-slate-700">
+                            <input type="checkbox" class="adv-col-check rounded text-indigo-600" data-col="OLT" checked
+                                onchange="window.applyAdvancedFilters()"> OLT
+                        </label>
+                        <label
+                            class="flex items-center gap-2 bg-white px-3 py-2 rounded-xl border border-slate-100 cursor-pointer hover:border-indigo-300 transition text-xs font-bold text-slate-700">
+                            <input type="checkbox" class="adv-col-check rounded text-indigo-600" data-col="Community"
+                                onchange="window.applyAdvancedFilters()"> ชุมชน
+                        </label>
+                        <label
+                            class="flex items-center gap-2 bg-white px-3 py-2 rounded-xl border border-slate-100 cursor-pointer hover:border-indigo-300 transition text-xs font-bold text-slate-700">
+                            <input type="checkbox" class="adv-col-check rounded text-indigo-600"
+                                data-col="InventoryNumber" checked onchange="window.applyAdvancedFilters()">
+                            ทะเบียนครุภัณฑ์
+                        </label>
+                        <label
+                            class="flex items-center gap-2 bg-white px-3 py-2 rounded-xl border border-slate-100 cursor-pointer hover:border-indigo-300 transition text-xs font-bold text-slate-700">
+                            <input type="checkbox" class="adv-col-check rounded text-indigo-600" data-col="SerialNumber"
+                                checked onchange="window.applyAdvancedFilters()"> Serial No.
+                        </label>
+                        <label
+                            class="flex items-center gap-2 bg-white px-3 py-2 rounded-xl border border-slate-100 cursor-pointer hover:border-indigo-300 transition text-xs font-bold text-slate-700">
+                            <input type="checkbox" class="adv-col-check rounded text-indigo-600" data-col="Notes"
+                                onchange="window.applyAdvancedFilters()"> หมายเหตุ
+                        </label>
+                    </div>
+                    <!-- Group By -->
+                    <div class="mt-4 flex items-center gap-3">
+                        <label
+                            class="text-[10px] font-black text-indigo-400 uppercase tracking-widest whitespace-nowrap">
+                            <i class="fas fa-layer-group mr-1"></i> จัดกลุ่มตาม (Group By)
+                        </label>
+                        <select id="adv-group-by" onchange="window.applyAdvancedFilters()"
+                            class="bg-white border border-indigo-200 rounded-xl px-3 py-2 text-xs font-bold outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20">
+                            <option value="">ไม่จัดกลุ่ม (None)</option>
+                            <option value="OLT">OLT Node</option>
+                            <option value="Status">สถานะ (Status)</option>
+                            <option value="InstallType">ประเภท (Type)</option>
+                            <option value="Community">ชุมชน (Community)</option>
+                            <option value="Speaker_size">ขนาดลำโพง (Watt)</option>
+                        </select>
+                    </div>
+                </div>
+
                 <!-- Summary Cards -->
                 <div class="p-6">
                     <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-6" id="adv-summary-cards">
@@ -3007,19 +3117,8 @@
                     <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
                         <div class="overflow-x-auto">
                             <table class="w-full text-left" id="adv-report-table">
-                                <thead
+                                <thead id="adv-report-thead"
                                     class="bg-slate-50 text-slate-500 text-[10px] uppercase font-black tracking-widest border-b">
-                                    <tr>
-                                        <th class="p-4">No.</th>
-                                        <th class="p-4">ตำแหน่ง</th>
-                                        <th class="p-4">สถานะ</th>
-                                        <th class="p-4">ประเภท</th>
-                                        <th class="p-4">ขนาด (W)</th>
-                                        <th class="p-4">จำนวน</th>
-                                        <th class="p-4">OLT</th>
-                                        <th class="p-4">ทะเบียนครุภัณฑ์</th>
-                                        <th class="p-4">Serial No.</th>
-                                    </tr>
                                 </thead>
                                 <tbody id="adv-report-tbody" class="divide-y divide-slate-50 text-sm">
                                 </tbody>
@@ -3268,11 +3367,15 @@
                 startAnnouncementsSync();
                 startCommunitySync();
                 // Reset UI initial state based on auth role
-                if (window.currentUser && window.currentUser.role === 'Admin') {
+                if (window.currentUser && (window.currentUser.role === 'Admin' || window.currentUser.role === 'Officer')) {
                     document.querySelectorAll('.admin-only-ui, .admin-only-menu').forEach(el => el.classList.remove('hidden'));
                     document.querySelectorAll('.public-only-ui').forEach(el => el.classList.add('hidden'));
                     const publicMenu = document.getElementById('public-menu-group');
                     if (publicMenu) publicMenu.classList.add('hidden');
+                    // Hide admin-exclusive elements from Officers
+                    if (window.currentUser.role !== 'Admin') {
+                        document.querySelectorAll('.admin-exclusive').forEach(el => el.classList.add('hidden'));
+                    }
                 } else {
                     document.querySelectorAll('.admin-only-ui, .admin-only-menu').forEach(el => el.classList.add('hidden'));
                     document.querySelectorAll('.public-only-ui').forEach(el => el.classList.remove('hidden'));
@@ -3507,7 +3610,8 @@
                            </div>
                         </div>
                     `,
-                    width: '400px',
+                    width: '500px',
+                    customClass: { container: 'swal-top-layer' },
                     showConfirmButton: true,
                     confirmButtonText: 'ตกลง',
                     confirmButtonColor: '#1e40af',
@@ -3578,12 +3682,37 @@
 
                     Swal.fire({
                         icon: 'success',
-                        title: 'ลบผู้ใช้สำเร็จ',
-                        text: 'ระบบได้อัปเดตรายการแล้ว',
-                        toast: true,
-                        position: 'top-end',
-                        timer: 2000,
-                        showConfirmButton: false
+                        title: '<strong>ลบผู้ใช้สำเร็จ</strong>',
+                        html: `
+                            <div class="text-left bg-red-50 p-4 rounded-xl border border-red-100 mb-4">
+                                <p class="text-xs font-bold text-red-400 uppercase mb-1">การกระทำล่าสุด</p>
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 bg-red-100 text-red-600 rounded-lg flex items-center justify-center font-bold">
+                                        <i class="fas fa-user-times"></i>
+                                    </div>
+                                    <div>
+                                        <p class="font-bold text-slate-800">ลบบัญชีผู้ใช้แล้ว</p>
+                                        <p class="text-xs text-slate-500">สิทธิ์การใช้งานถูกเพิกถอนทันที</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="text-left">
+                                <p class="text-xs font-bold text-slate-400 uppercase mb-2">บัญชีผู้ใช้ทั้งหมดในระบบ (Real-time)</p>
+                                <div id="swal-delete-user-list" class="space-y-2 max-h-[200px] overflow-y-auto">
+                                    ${(window.appUsers || []).map(u =>
+                            '<div class="flex justify-between items-center text-xs p-2 bg-white border border-slate-100 rounded-lg shadow-sm">' +
+                            '<span class="font-bold text-slate-700">' + u.username + '</span>' +
+                            '<span class="px-2 py-0.5 bg-slate-100 text-slate-500 rounded text-[10px]">' + u.role + '</span>' +
+                            '</div>'
+                        ).join('')}
+                                    <p class="text-xs text-blue-600 font-bold text-right">รวม ${(window.appUsers || []).length} บัญชี</p>
+                                </div>
+                            </div>
+                        `,
+                        width: '500px',
+                        customClass: { container: 'swal-top-layer' },
+                        confirmButtonText: 'ตกลง',
+                        confirmButtonColor: '#1e40af'
                     });
                 } catch (e) {
                     console.error(e);
@@ -4615,6 +4744,12 @@ function uploadEvidence(base64Data, fileName, pointNumber) {
                 document.querySelectorAll('.admin-only-ui').forEach(el => el.classList.remove('hidden'));
                 document.querySelectorAll('.public-only-ui').forEach(el => el.classList.add('hidden'));
                 document.querySelectorAll('.admin-only-menu').forEach(el => el.classList.remove('hidden'));
+                // Hide admin-exclusive elements from Officers
+                if (currentUser.role !== 'Admin') {
+                    document.querySelectorAll('.admin-exclusive').forEach(el => el.classList.add('hidden'));
+                } else {
+                    document.querySelectorAll('.admin-exclusive').forEach(el => el.classList.remove('hidden'));
+                }
 
                 document.getElementById('userNameDisplay').innerText = currentUser.name;
                 document.getElementById('userRoleDisplay').innerText = currentUser.role === 'Admin' ? 'Administrator' : 'Officer';
@@ -5048,6 +5183,10 @@ function uploadEvidence(base64Data, fileName, pointNumber) {
 
         // --- User Management Logic ---
         window.openUserModal = function (userId = null) {
+            if (!currentUser || currentUser.role !== 'Admin') {
+                Swal.fire({ icon: 'warning', title: 'สิทธิ์ไม่เพียงพอ', text: 'เฉพาะผู้ดูแลระบบ (Admin) เท่านั้นที่สามารถจัดการผู้ใช้ได้', customClass: { container: 'swal-top-layer' } });
+                return;
+            }
             const m = document.getElementById('userModal');
             const form = document.getElementById('userForm');
             // Check if form exists before reset
@@ -7053,8 +7192,68 @@ function uploadEvidence(base64Data, fileName, pointNumber) {
             }).sort((a, b) => (parseInt(a.Number) || 0) - (parseInt(b.Number) || 0));
         }
 
+        // --- Advanced Report: Column Config & Sort State ---
+        const advColConfig = {
+            Number: { label: 'No.', render: p => `<td class="p-4 font-black text-blue-900">${p.Number || '-'}</td>`, printRender: p => `<td style="font-weight:700">${p.Number || '-'}</td>`, csvVal: p => p.Number },
+            Position: { label: '\u0e15\u0e33\u0e41\u0e2b\u0e19\u0e48\u0e07', render: p => `<td class="p-4 font-bold text-slate-700">${p.Position || '-'}</td>`, printRender: p => `<td>${p.Position || '-'}</td>`, csvVal: p => p.Position },
+            Latitude: { label: 'Latitude', render: p => `<td class="p-4 text-xs text-slate-500 font-mono">${p.Latitude || '-'}</td>`, printRender: p => `<td>${p.Latitude || '-'}</td>`, csvVal: p => p.Latitude },
+            Longitude: { label: 'Longitude', render: p => `<td class="p-4 text-xs text-slate-500 font-mono">${p.Longitude || '-'}</td>`, printRender: p => `<td>${p.Longitude || '-'}</td>`, csvVal: p => p.Longitude },
+            Status: { label: '\u0e2a\u0e16\u0e32\u0e19\u0e30', render: p => `<td class="p-4">${advStatusBadge(p.Status)}</td>`, printRender: p => `<td>${translateStatus(p.Status)}</td>`, csvVal: p => translateStatus(p.Status) },
+            InstallType: { label: '\u0e1b\u0e23\u0e30\u0e40\u0e20\u0e17', render: p => `<td class="p-4 text-xs font-bold">${translateInstallType(p.InstallType) || '-'}</td>`, printRender: p => `<td>${translateInstallType(p.InstallType)}</td>`, csvVal: p => translateInstallType(p.InstallType) },
+            Speaker_size: { label: '\u0e02\u0e19\u0e32\u0e14 (W)', render: p => `<td class="p-4 text-center font-bold">${p.Speaker_size || '-'}</td>`, printRender: p => `<td style="text-align:center">${p.Speaker_size || '-'}</td>`, csvVal: p => p.Speaker_size },
+            Speakers_amount: { label: '\u0e08\u0e33\u0e19\u0e27\u0e19', render: p => `<td class="p-4 text-center font-bold">${p.Speakers_amount || '-'}</td>`, printRender: p => `<td style="text-align:center">${p.Speakers_amount || '-'}</td>`, csvVal: p => p.Speakers_amount },
+            OLT: { label: 'OLT', render: p => `<td class="p-4 text-xs font-medium text-slate-600">${p.OLT || '-'}</td>`, printRender: p => `<td>${p.OLT || '-'}</td>`, csvVal: p => p.OLT },
+            Community: { label: '\u0e0a\u0e38\u0e21\u0e0a\u0e19', render: p => `<td class="p-4 text-xs font-medium text-teal-700">${p.Community || '-'}</td>`, printRender: p => `<td>${p.Community || '-'}</td>`, csvVal: p => p.Community },
+            InventoryNumber: { label: '\u0e17\u0e30\u0e40\u0e1a\u0e35\u0e22\u0e19\u0e04\u0e23\u0e38\u0e20\u0e31\u0e13\u0e11\u0e4c', render: p => `<td class="p-4 text-xs text-slate-500">${p.InventoryNumber || '-'}</td>`, printRender: p => `<td>${p.InventoryNumber || '-'}</td>`, csvVal: p => p.InventoryNumber },
+            SerialNumber: { label: 'Serial No.', render: p => `<td class="p-4 text-xs text-slate-500">${p.SerialNumber || '-'}</td>`, printRender: p => `<td>${p.SerialNumber || '-'}</td>`, csvVal: p => p.SerialNumber },
+            Notes: { label: '\u0e2b\u0e21\u0e32\u0e22\u0e40\u0e2b\u0e15\u0e38', render: p => `<td class="p-4 text-xs text-slate-400">${p.Notes || p.Remarks || '-'}</td>`, printRender: p => `<td>${p.Notes || p.Remarks || '-'}</td>`, csvVal: p => p.Notes || p.Remarks }
+        };
+        let advSortField = '';
+        let advSortAsc = true;
+
+        function advStatusBadge(status) {
+            const config = {
+                'Operational': { bg: 'bg-green-100', text: 'text-green-700', label: '\u0e1e\u0e23\u0e49\u0e2d\u0e21\u0e43\u0e0a\u0e49\u0e07\u0e32\u0e19' },
+                'Under Repair': { bg: 'bg-orange-100', text: 'text-orange-700', label: '\u0e41\u0e08\u0e49\u0e07\u0e0b\u0e48\u0e2d\u0e21' },
+                'Maintenance': { bg: 'bg-blue-100', text: 'text-blue-700', label: '\u0e1a\u0e33\u0e23\u0e38\u0e07\u0e23\u0e31\u0e01\u0e29\u0e32' },
+                'Inactive': { bg: 'bg-slate-100', text: 'text-slate-500', label: '\u0e1b\u0e34\u0e14\u0e43\u0e0a\u0e49\u0e07\u0e32\u0e19' },
+                'Pending': { bg: 'bg-yellow-100', text: 'text-yellow-700', label: '\u0e23\u0e2d\u0e15\u0e23\u0e27\u0e08\u0e2a\u0e2d\u0e1a' }
+            };
+            const c = config[status] || { bg: 'bg-slate-100', text: 'text-slate-500', label: status || '-' };
+            return `<span class="px-2 py-1 ${c.bg} ${c.text} rounded-full text-[10px] font-bold">${c.label}</span>`;
+        }
+
+        window.getSelectedAdvCols = function () {
+            return Array.from(document.querySelectorAll('.adv-col-check:checked')).map(c => c.dataset.col);
+        };
+
+        window.toggleAllAdvColumns = function (state) {
+            document.querySelectorAll('.adv-col-check').forEach(c => c.checked = state);
+            window.applyAdvancedFilters();
+        };
+
+        window.sortAdvReport = function (field) {
+            if (advSortField === field) { advSortAsc = !advSortAsc; }
+            else { advSortField = field; advSortAsc = true; }
+            window.applyAdvancedFilters();
+        };
+
         window.applyAdvancedFilters = function () {
             advFilteredData = getAdvancedFilteredData();
+            const selectedCols = window.getSelectedAdvCols();
+
+            // Apply sorting
+            if (advSortField) {
+                advFilteredData.sort((a, b) => {
+                    let va = a[advSortField] ?? '', vb = b[advSortField] ?? '';
+                    if (advSortField === 'Number' || advSortField === 'Speaker_size' || advSortField === 'Speakers_amount') {
+                        va = parseInt(va) || 0; vb = parseInt(vb) || 0;
+                    } else { va = String(va).toLowerCase(); vb = String(vb).toLowerCase(); }
+                    if (va < vb) return advSortAsc ? -1 : 1;
+                    if (va > vb) return advSortAsc ? 1 : -1;
+                    return 0;
+                });
+            }
 
             // Update summary cards
             const total = advFilteredData.length;
@@ -7063,7 +7262,6 @@ function uploadEvidence(base64Data, fileName, pointNumber) {
             const w100 = advFilteredData.filter(p => String(p.Speaker_size) == '100').length;
             const w30 = advFilteredData.filter(p => String(p.Speaker_size) == '30').length;
             const totalSpeakers = advFilteredData.reduce((sum, p) => sum + (parseInt(p.Speakers_amount) || 0), 0);
-
             document.getElementById('adv-total').textContent = total;
             document.getElementById('adv-operational').textContent = operational;
             document.getElementById('adv-notready').textContent = notReady;
@@ -7081,57 +7279,57 @@ function uploadEvidence(base64Data, fileName, pointNumber) {
             const fOLT = document.getElementById('adv-filter-olt')?.value;
             const fAmount = document.getElementById('adv-filter-amount')?.value;
             const fSearch = document.getElementById('adv-filter-search')?.value;
-
             if (fWatt) activeFilters.push(`\u0e02\u0e19\u0e32\u0e14: ${fWatt}W`);
             if (fStatus) activeFilters.push(`\u0e2a\u0e16\u0e32\u0e19\u0e30: ${translateStatus(fStatus)}`);
             if (fType) activeFilters.push(`\u0e1b\u0e23\u0e30\u0e40\u0e20\u0e17: ${translateInstallType(fType)}`);
             if (fOLT) activeFilters.push(`OLT: ${fOLT}`);
             if (fAmount) activeFilters.push(`\u0e08\u0e33\u0e19\u0e27\u0e19: ${fAmount} \u0e15\u0e31\u0e27`);
             if (fSearch) activeFilters.push(`\u0e04\u0e49\u0e19\u0e2b\u0e32: "${fSearch}"`);
-
             if (activeFilters.length > 0) {
                 filterIndicator.classList.remove('hidden');
-                filterTags.innerHTML = activeFilters.map(f =>
-                    `<span class="inline-flex items-center gap-1 px-2.5 py-1 bg-indigo-100 text-indigo-700 rounded-full text-[10px] font-bold">${f}</span>`
-                ).join('');
-            } else {
-                filterIndicator.classList.add('hidden');
-            }
+                filterTags.innerHTML = activeFilters.map(f => `<span class="inline-flex items-center gap-1 px-2.5 py-1 bg-indigo-100 text-indigo-700 rounded-full text-[10px] font-bold">${f}</span>`).join('');
+            } else { filterIndicator.classList.add('hidden'); }
 
-            // Update data table
+            // Dynamic thead
+            const thead = document.getElementById('adv-report-thead');
+            const sortIcon = (col) => {
+                if (advSortField !== col) return '<i class="fas fa-sort text-slate-300 ml-1"></i>';
+                return advSortAsc ? '<i class="fas fa-sort-up text-indigo-600 ml-1"></i>' : '<i class="fas fa-sort-down text-indigo-600 ml-1"></i>';
+            };
+            thead.innerHTML = '<tr>' + selectedCols.map(col =>
+                `<th class="p-4 cursor-pointer hover:bg-indigo-100 transition select-none" onclick="window.sortAdvReport('${col}')">${advColConfig[col]?.label || col} ${sortIcon(col)}</th>`
+            ).join('') + '</tr>';
+
+            // Dynamic tbody with grouping
             const tbody = document.getElementById('adv-report-tbody');
             const noData = document.getElementById('adv-no-data');
+            const groupBy = document.getElementById('adv-group-by')?.value || '';
 
             if (advFilteredData.length === 0) {
-                tbody.innerHTML = '';
-                noData.classList.remove('hidden');
+                tbody.innerHTML = ''; noData.classList.remove('hidden');
             } else {
                 noData.classList.add('hidden');
-                const statusBadge = (status) => {
-                    const config = {
-                        'Operational': { bg: 'bg-green-100', text: 'text-green-700', label: '\u0e1e\u0e23\u0e49\u0e2d\u0e21\u0e43\u0e0a\u0e49\u0e07\u0e32\u0e19' },
-                        'Under Repair': { bg: 'bg-orange-100', text: 'text-orange-700', label: '\u0e41\u0e08\u0e49\u0e07\u0e0b\u0e48\u0e2d\u0e21' },
-                        'Maintenance': { bg: 'bg-blue-100', text: 'text-blue-700', label: '\u0e1a\u0e33\u0e23\u0e38\u0e07\u0e23\u0e31\u0e01\u0e29\u0e32' },
-                        'Inactive': { bg: 'bg-slate-100', text: 'text-slate-500', label: '\u0e1b\u0e34\u0e14\u0e43\u0e0a\u0e49\u0e07\u0e32\u0e19' },
-                        'Pending': { bg: 'bg-yellow-100', text: 'text-yellow-700', label: '\u0e23\u0e2d\u0e15\u0e23\u0e27\u0e08\u0e2a\u0e2d\u0e1a' }
-                    };
-                    const c = config[status] || { bg: 'bg-slate-100', text: 'text-slate-500', label: status || '-' };
-                    return `<span class="px-2 py-1 ${c.bg} ${c.text} rounded-full text-[10px] font-bold">${c.label}</span>`;
-                };
+                const renderRow = (p) => '<tr class="hover:bg-slate-50 transition">' + selectedCols.map(col => advColConfig[col]?.render(p) || `<td class="p-4">-</td>`).join('') + '</tr>';
 
-                tbody.innerHTML = advFilteredData.map(p => `
-                    <tr class="hover:bg-slate-50 transition">
-                        <td class="p-4 font-black text-blue-900">${p.Number || '-'}</td>
-                        <td class="p-4 font-bold text-slate-700">${p.Position || '-'}</td>
-                        <td class="p-4">${statusBadge(p.Status)}</td>
-                        <td class="p-4 text-xs font-bold">${translateInstallType(p.InstallType) || '-'}</td>
-                        <td class="p-4 text-center font-bold">${p.Speaker_size || '-'}</td>
-                        <td class="p-4 text-center font-bold">${p.Speakers_amount || '-'}</td>
-                        <td class="p-4 text-xs font-medium text-slate-600">${p.OLT || '-'}</td>
-                        <td class="p-4 text-xs text-slate-500">${p.InventoryNumber || '-'}</td>
-                        <td class="p-4 text-xs text-slate-500">${p.SerialNumber || '-'}</td>
-                    </tr>
-                `).join('');
+                if (groupBy) {
+                    const groups = {};
+                    advFilteredData.forEach(p => {
+                        let key = p[groupBy] || '\u0e44\u0e21\u0e48\u0e23\u0e30\u0e1a\u0e38';
+                        if (groupBy === 'Status') key = translateStatus(key);
+                        if (groupBy === 'InstallType') key = translateInstallType(key);
+                        if (!groups[key]) groups[key] = [];
+                        groups[key].push(p);
+                    });
+                    let html = '';
+                    Object.entries(groups).forEach(([key, items]) => {
+                        const grpSpeakers = items.reduce((s, p) => s + (parseInt(p.Speakers_amount) || 0), 0);
+                        html += `<tr class="bg-indigo-50"><td colspan="${selectedCols.length}" class="p-3 font-black text-indigo-800 text-sm"><i class="fas fa-layer-group mr-2 text-indigo-400"></i>${key} <span class="text-xs font-bold text-indigo-400 ml-2">(${items.length} \u0e23\u0e32\u0e22\u0e01\u0e32\u0e23 | \u0e25\u0e33\u0e42\u0e1e\u0e07\u0e23\u0e27\u0e21 ${grpSpeakers} \u0e15\u0e31\u0e27)</span></td></tr>`;
+                        html += items.map(renderRow).join('');
+                    });
+                    tbody.innerHTML = html;
+                } else {
+                    tbody.innerHTML = advFilteredData.map(renderRow).join('');
+                }
             }
 
             // Update info text
@@ -7147,6 +7345,10 @@ function uploadEvidence(base64Data, fileName, pointNumber) {
             document.getElementById('adv-filter-olt').value = '';
             document.getElementById('adv-filter-amount').value = '';
             document.getElementById('adv-filter-search').value = '';
+            const groupByEl = document.getElementById('adv-group-by');
+            if (groupByEl) groupByEl.value = '';
+            advSortField = '';
+            advSortAsc = true;
             window.applyAdvancedFilters();
         };
 
@@ -7155,10 +7357,8 @@ function uploadEvidence(base64Data, fileName, pointNumber) {
                 Swal.fire({ icon: 'warning', title: '\u0e44\u0e21\u0e48\u0e21\u0e35\u0e02\u0e49\u0e2d\u0e21\u0e39\u0e25', text: '\u0e01\u0e23\u0e38\u0e13\u0e32\u0e40\u0e25\u0e37\u0e2d\u0e01\u0e15\u0e31\u0e27\u0e01\u0e23\u0e2d\u0e07\u0e40\u0e1e\u0e37\u0e48\u0e2d\u0e14\u0e39\u0e02\u0e49\u0e2d\u0e21\u0e39\u0e25\u0e01\u0e48\u0e2d\u0e19' });
                 return;
             }
-
-            // CSV headers
-            const headers = ['\u0e2b\u0e21\u0e32\u0e22\u0e40\u0e25\u0e02\u0e1e\u0e34\u0e01\u0e31\u0e14', '\u0e15\u0e33\u0e41\u0e2b\u0e19\u0e48\u0e07/\u0e1e\u0e34\u0e01\u0e31\u0e14', '\u0e2a\u0e16\u0e32\u0e19\u0e30', '\u0e1b\u0e23\u0e30\u0e40\u0e20\u0e17\u0e01\u0e32\u0e23\u0e15\u0e34\u0e14\u0e15\u0e31\u0e49\u0e07', '\u0e02\u0e19\u0e32\u0e14\u0e25\u0e33\u0e42\u0e1e\u0e07 (W)', '\u0e08\u0e33\u0e19\u0e27\u0e19\u0e25\u0e33\u0e42\u0e1e\u0e07', 'OLT Node', '\u0e17\u0e30\u0e40\u0e1a\u0e35\u0e22\u0e19\u0e04\u0e23\u0e38\u0e20\u0e31\u0e13\u0e11\u0e4c', 'Serial Number', 'Latitude', 'Longitude', '\u0e2b\u0e21\u0e32\u0e22\u0e40\u0e2b\u0e15\u0e38'];
-
+            const selectedCols = window.getSelectedAdvCols();
+            const headers = selectedCols.map(col => advColConfig[col]?.label || col);
             const escapeCSV = (val) => {
                 const str = String(val || '');
                 if (str.includes(',') || str.includes('"') || str.includes('\n')) {
@@ -7166,44 +7366,22 @@ function uploadEvidence(base64Data, fileName, pointNumber) {
                 }
                 return str;
             };
-
-            const rows = advFilteredData.map(p => [
-                p.Number,
-                p.Position,
-                translateStatus(p.Status),
-                translateInstallType(p.InstallType),
-                p.Speaker_size,
-                p.Speakers_amount,
-                p.OLT,
-                p.InventoryNumber,
-                p.SerialNumber,
-                p.Latitude,
-                p.Longitude,
-                p.Notes
-            ].map(escapeCSV).join(','));
-
-            // Add UTF-8 BOM for Thai characters in Excel
+            const rows = advFilteredData.map(p => selectedCols.map(col => escapeCSV(advColConfig[col]?.csvVal(p))).join(','));
             const BOM = '\uFEFF';
             const csvContent = BOM + headers.map(escapeCSV).join(',') + '\n' + rows.join('\n');
-
             const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
             const link = document.createElement('a');
             link.href = URL.createObjectURL(blob);
-
             const now = new Date();
             const dateStr = now.toISOString().slice(0, 10);
             link.download = `PA_Report_${dateStr}.csv`;
             link.click();
             URL.revokeObjectURL(link.href);
-
             Swal.fire({
                 icon: 'success',
                 title: 'Export CSV \u0e2a\u0e33\u0e40\u0e23\u0e47\u0e08!',
-                text: `\u0e2a\u0e48\u0e07\u0e2d\u0e2d\u0e01 ${advFilteredData.length} \u0e23\u0e32\u0e22\u0e01\u0e32\u0e23`,
-                timer: 2000,
-                showConfirmButton: false,
-                toast: true,
-                position: 'top-end'
+                text: `\u0e2a\u0e48\u0e07\u0e2d\u0e2d\u0e01 ${advFilteredData.length} \u0e23\u0e32\u0e22\u0e01\u0e32\u0e23 (${selectedCols.length} \u0e04\u0e2d\u0e25\u0e31\u0e21\u0e19\u0e4c)`,
+                timer: 2000, showConfirmButton: false, toast: true, position: 'top-end'
             });
         };
 
@@ -7213,6 +7391,7 @@ function uploadEvidence(base64Data, fileName, pointNumber) {
                 return;
             }
 
+            const selectedCols = window.getSelectedAdvCols();
             const totalPoints = advFilteredData.length;
             const operational = advFilteredData.filter(p => p.Status === 'Operational').length;
             const w100 = advFilteredData.filter(p => String(p.Speaker_size) == '100').length;
@@ -7256,31 +7435,11 @@ function uploadEvidence(base64Data, fileName, pointNumber) {
                     <table>
                         <thead>
                             <tr>
-                                <th>No.</th>
-                                <th>\u0e15\u0e33\u0e41\u0e2b\u0e19\u0e48\u0e07/\u0e1e\u0e34\u0e01\u0e31\u0e14</th>
-                                <th>\u0e2a\u0e16\u0e32\u0e19\u0e30</th>
-                                <th>\u0e1b\u0e23\u0e30\u0e40\u0e20\u0e17</th>
-                                <th>\u0e02\u0e19\u0e32\u0e14 (W)</th>
-                                <th>\u0e08\u0e33\u0e19\u0e27\u0e19</th>
-                                <th>OLT</th>
-                                <th>\u0e17\u0e30\u0e40\u0e1a\u0e35\u0e22\u0e19\u0e04\u0e23\u0e38\u0e20\u0e31\u0e13\u0e11\u0e4c</th>
-                                <th>Serial No.</th>
+                                ${selectedCols.map(col => `<th>${advColConfig[col]?.label || col}</th>`).join('')}
                             </tr>
                         </thead>
                         <tbody>
-                            ${advFilteredData.map(p => `
-                                <tr>
-                                    <td style="font-weight:700">${p.Number || '-'}</td>
-                                    <td>${p.Position || '-'}</td>
-                                    <td>${translateStatus(p.Status)}</td>
-                                    <td>${translateInstallType(p.InstallType)}</td>
-                                    <td style="text-align:center">${p.Speaker_size || '-'}</td>
-                                    <td style="text-align:center">${p.Speakers_amount || '-'}</td>
-                                    <td>${p.OLT || '-'}</td>
-                                    <td>${p.InventoryNumber || '-'}</td>
-                                    <td>${p.SerialNumber || '-'}</td>
-                                </tr>
-                            `).join('')}
+                            ${advFilteredData.map(p => `<tr>${selectedCols.map(col => advColConfig[col]?.printRender(p) || '<td>-</td>').join('')}</tr>`).join('')}
                         </tbody>
                     </table>
                     <div style="margin-top: 60px; display: flex; justify-content: space-around; page-break-inside: avoid;">
@@ -7314,6 +7473,151 @@ function uploadEvidence(base64Data, fileName, pointNumber) {
         window.refreshAllViews = function () {
             if (typeof originalRefreshAllViews === 'function') originalRefreshAllViews();
             populateOLTDropdowns();
+        };
+
+        // --- MAP EXPORT TO IMAGE ---
+        window.exportMapAsImage = async function () {
+            const mapEl = document.getElementById('map');
+            if (!mapEl) { Swal.fire({ icon: 'error', title: 'ไม่พบแผนที่' }); return; }
+
+            Swal.fire({ title: 'กำลังสร้างภาพแผนที่...', html: '<p class="text-sm text-slate-500">กรุณารอสักครู่</p>', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+
+            try {
+                // Capture the map
+                const mapCanvas = await html2canvas(mapEl, {
+                    useCORS: true, allowTaint: true, scale: 2,
+                    logging: false, backgroundColor: '#ffffff',
+                    ignoreElements: (el) => el.classList?.contains('leaflet-control-zoom') || el.classList?.contains('leaflet-control-attribution')
+                });
+
+                // Build branded canvas
+                const padding = 60;
+                const headerH = 120;
+                const footerH = 80;
+                const statsH = 50;
+                const totalW = mapCanvas.width + (padding * 2);
+                const totalH = headerH + mapCanvas.height + statsH + footerH + (padding * 2);
+
+                const canvas = document.createElement('canvas');
+                canvas.width = totalW;
+                canvas.height = totalH;
+                const ctx = canvas.getContext('2d');
+
+                // Background gradient
+                const bgGrad = ctx.createLinearGradient(0, 0, 0, totalH);
+                bgGrad.addColorStop(0, '#0f172a');
+                bgGrad.addColorStop(0.3, '#1e293b');
+                bgGrad.addColorStop(1, '#0f172a');
+                ctx.fillStyle = bgGrad;
+                ctx.fillRect(0, 0, totalW, totalH);
+
+                // Header area
+                const headerGrad = ctx.createLinearGradient(0, 0, totalW, 0);
+                headerGrad.addColorStop(0, '#1e40af');
+                headerGrad.addColorStop(1, '#3b82f6');
+                ctx.fillStyle = headerGrad;
+                ctx.fillRect(0, 0, totalW, headerH + padding);
+
+                // Title text
+                ctx.fillStyle = '#ffffff';
+                ctx.font = 'bold 42px Kanit, sans-serif';
+                ctx.fillText('ระบบลำโพงสาธารณะ เทศบาลเมืองอุทัยธานี', padding, padding + 50);
+                ctx.fillStyle = 'rgba(255,255,255,0.7)';
+                ctx.font = '24px Kanit, sans-serif';
+                ctx.fillText('Interactive Map • Real-time Location Intelligence', padding, padding + 85);
+
+                // Timestamp badge
+                const now = new Date();
+                const timeStr = now.toLocaleString('th-TH', { dateStyle: 'full', timeStyle: 'short' });
+                ctx.font = '18px Kanit, sans-serif';
+                ctx.fillStyle = 'rgba(255,255,255,0.5)';
+                ctx.textAlign = 'right';
+                ctx.fillText(timeStr, totalW - padding, padding + 50);
+                ctx.textAlign = 'left';
+
+                // Map image with rounded corners effect
+                const mapY = headerH + padding + 20;
+                ctx.save();
+                const r = 30;
+                const mx = padding, my = mapY, mw = mapCanvas.width, mh = mapCanvas.height;
+                ctx.beginPath();
+                ctx.moveTo(mx + r, my);
+                ctx.lineTo(mx + mw - r, my); ctx.quadraticCurveTo(mx + mw, my, mx + mw, my + r);
+                ctx.lineTo(mx + mw, my + mh - r); ctx.quadraticCurveTo(mx + mw, my + mh, mx + mw - r, my + mh);
+                ctx.lineTo(mx + r, my + mh); ctx.quadraticCurveTo(mx, my + mh, mx, my + mh - r);
+                ctx.lineTo(mx, my + r); ctx.quadraticCurveTo(mx, my, mx + r, my);
+                ctx.closePath();
+                ctx.clip();
+                ctx.drawImage(mapCanvas, mx, my);
+                ctx.restore();
+
+                // Border around map
+                ctx.strokeStyle = 'rgba(255,255,255,0.15)';
+                ctx.lineWidth = 3;
+                ctx.beginPath();
+                ctx.moveTo(mx + r, my);
+                ctx.lineTo(mx + mw - r, my); ctx.quadraticCurveTo(mx + mw, my, mx + mw, my + r);
+                ctx.lineTo(mx + mw, my + mh - r); ctx.quadraticCurveTo(mx + mw, my + mh, mx + mw - r, my + mh);
+                ctx.lineTo(mx + r, my + mh); ctx.quadraticCurveTo(mx, my + mh, mx, my + mh - r);
+                ctx.lineTo(mx, my + r); ctx.quadraticCurveTo(mx, my, mx + r, my);
+                ctx.closePath();
+                ctx.stroke();
+
+                // Stats bar
+                const statsY = mapY + mh + 20;
+                const points = window.speakerPoints || [];
+                const totalPts = points.length;
+                const opPts = points.filter(p => p.Status === 'Operational').length;
+                const totalSpk = points.reduce((s, p) => s + (parseInt(p.Speakers_amount) || 0), 0);
+                const comms = (window.communities || []).length;
+
+                const stats = [
+                    { icon: 'จุดติดตั้ง', val: totalPts, color: '#60a5fa' },
+                    { icon: 'พร้อมใช้งาน', val: opPts, color: '#34d399' },
+                    { icon: 'ลำโพงรวม', val: totalSpk, color: '#a78bfa' },
+                    { icon: 'ชุมชน', val: comms, color: '#2dd4bf' }
+                ];
+                const sW = (totalW - padding * 2) / stats.length;
+                stats.forEach((s, i) => {
+                    const sx = padding + (i * sW);
+                    ctx.fillStyle = 'rgba(255,255,255,0.05)';
+                    ctx.fillRect(sx + 4, statsY, sW - 8, statsH);
+                    ctx.fillStyle = s.color;
+                    ctx.font = 'bold 22px Kanit, sans-serif';
+                    ctx.fillText(s.val.toLocaleString(), sx + 16, statsY + 32);
+                    ctx.fillStyle = 'rgba(255,255,255,0.4)';
+                    ctx.font = '14px Kanit, sans-serif';
+                    ctx.fillText(s.icon, sx + 80, statsY + 32);
+                });
+
+                // Footer
+                const footerY = totalH - footerH;
+                ctx.fillStyle = 'rgba(255,255,255,0.05)';
+                ctx.fillRect(0, footerY, totalW, footerH);
+                ctx.fillStyle = 'rgba(255,255,255,0.3)';
+                ctx.font = '16px Kanit, sans-serif';
+                ctx.fillText('Uthai Thani Smart PA System • กองยุทธศาสตร์และงบประมาณ • Cloud Realtime Sync', padding, footerY + 35);
+                ctx.textAlign = 'right';
+                ctx.fillStyle = 'rgba(255,255,255,0.2)';
+                ctx.font = '13px Kanit, sans-serif';
+                ctx.fillText('สร้างโดย Uthai Thani Smart PA | ' + timeStr, totalW - padding, footerY + 55);
+                ctx.textAlign = 'left';
+
+                // Download
+                const link = document.createElement('a');
+                link.download = `SmartPA_Map_${now.toISOString().slice(0, 10)}.png`;
+                link.href = canvas.toDataURL('image/png', 1.0);
+                link.click();
+
+                Swal.fire({
+                    icon: 'success', title: 'ส่งออกภาพสำเร็จ!',
+                    html: '<p class="text-sm text-slate-500">ไฟล์ PNG ถูกบันทึกแล้ว</p>',
+                    timer: 2500, showConfirmButton: false, toast: true, position: 'top-end'
+                });
+            } catch (err) {
+                console.error('Map export error:', err);
+                Swal.fire({ icon: 'error', title: 'เกิดข้อผิดพลาด', text: err.message });
+            }
         };
 
         // --- COMMUNITY MANAGEMENT ---
@@ -7381,6 +7685,10 @@ function uploadEvidence(base64Data, fileName, pointNumber) {
         };
 
         window.openCommunityManager = function () {
+            if (!currentUser || currentUser.role !== 'Admin') {
+                Swal.fire({ icon: 'warning', title: 'สิทธิ์ไม่เพียงพอ', text: 'เฉพาะผู้ดูแลระบบ (Admin) เท่านั้นที่สามารถจัดการชุมชนได้', customClass: { container: 'swal-top-layer' } });
+                return;
+            }
             document.getElementById('communityManagerModal').classList.remove('hidden');
             window.renderCommunityList();
         };
