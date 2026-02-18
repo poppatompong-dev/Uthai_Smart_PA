@@ -4006,7 +4006,7 @@ function uploadEvidence(base64Data, fileName, pointNumber) {
 
         function initMap() {
             if (mapInstance) { mapInstance.invalidateSize(); return; }
-            mapInstance = L.map('map').setView([15.3800, 100.0250], 14);
+            mapInstance = L.map('map', { preferCanvas: true }).setView([15.3800, 100.0250], 14);
             window.streetLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '&copy; OpenStreetMap' });
             window.satLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', { attribution: 'Tiles &copy; Esri' });
             window.streetLayer.addTo(mapInstance);
@@ -4146,7 +4146,8 @@ function uploadEvidence(base64Data, fileName, pointNumber) {
                         }).addTo(coverageLayerInstance);
 
                         // Animated Pulse Circle (Outer)
-                        const pulseCircle = L.circle([lat, lng], {
+                        L.circle([lat, lng], {
+                            renderer: L.svg(),
                             radius: range,
                             color: '#3b82f6',
                             fillOpacity: 0,
@@ -7492,7 +7493,11 @@ function uploadEvidence(base64Data, fileName, pointNumber) {
                 const mapCanvas = await html2canvas(mapEl, {
                     useCORS: true, allowTaint: true, scale: 2,
                     logging: false, backgroundColor: '#ffffff',
-                    ignoreElements: (el) => el.classList?.contains('leaflet-control-zoom') || el.classList?.contains('leaflet-control-attribution')
+                    scrollX: 0, scrollY: 0,
+                    ignoreElements: (el) =>
+                        el.classList?.contains('leaflet-control-zoom') ||
+                        el.classList?.contains('leaflet-control-attribution') ||
+                        el.classList?.contains('coverage-pulse')
                 });
 
                 // Build branded canvas
