@@ -111,6 +111,11 @@
             animation: slideUp 0.5s ease-out;
         }
 
+        /* SweetAlert Top Layer Fix */
+        .swal-top-layer {
+            z-index: 9999 !important;
+        }
+
         @keyframes slideUp {
             from {
                 opacity: 0;
@@ -4775,8 +4780,8 @@ function uploadEvidence(base64Data, fileName, pointNumber) {
                     icon: 'error',
                     title: 'เข้าสู่ระบบไม่สำเร็จ',
                     text: 'ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง',
-                    footer: '<span class="text-slate-400">ลองใช้ admin / admin123</span>',
-                    confirmButtonColor: '#1e40af'
+                    confirmButtonColor: '#1e40af',
+                    customClass: { container: 'swal-top-layer' }
                 });
             }
         };
