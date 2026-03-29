@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <!-- DEPLOY_TEST_MARKER: 2026-01-22 -->
 <html lang="th">
 
@@ -6,6 +6,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Uthai Thani Smart PA | ระบบจัดการเสียงไร้สายอัจฉริยะ</title>
+    <link rel="icon" href="brand-logo.svg" type="image/svg+xml">
+    <link rel="shortcut icon" href="brand-logo.svg" type="image/svg+xml">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@200;300;400;500;600&display=swap" rel="stylesheet">
@@ -39,7 +41,7 @@
         .bg-watermark {
             position: fixed;
             inset: 0;
-            background-image: url('https://images.weserv.nl/?url=img5.pic.in.th/file/secure-sv1/ChatGPT-Image-Jan-21-2026-10_02_28-PM.png');
+            background-image: url('https://img5.pic.in.th/file/secure-sv1/ChatGPT-Image-Jan-21-2026-10_02_28-PM.png');
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
@@ -646,7 +648,8 @@
         <div class="sidebar-header">
             <div class="flex items-center space-x-3 cursor-pointer"
                 onclick="showView('landing'); closeSidebarMobile();">
-                <img src="https://images.weserv.nl/?url=img5.pic.in.th/file/secure-sv1/logo458ee4aa05680920.jpg"
+                <img src="brand-logo.svg"
+                    onerror="this.onerror=null;this.src='logo-fallback.svg';"
                     alt="Logo" crossorigin="anonymous"
                     class="h-12 w-12 object-contain bg-white rounded-xl shadow-md p-0.5">
                 <div>
@@ -1385,6 +1388,9 @@
                             <button onclick="window.openPointModal()"
                                 class="bg-green-600 text-white px-6 py-3.5 rounded-2xl font-bold shadow-xl flex items-center active:scale-95 transition text-shadow-none"><i
                                     class="fas fa-plus mr-2"></i> เพิ่มพิกัดใหม่</button>
+                            <button onclick="window.openBulkCommunityModal()"
+                                class="bg-teal-600 text-white px-6 py-3.5 rounded-2xl font-bold shadow-xl flex items-center active:scale-95 transition text-shadow-none"><i
+                                    class="fas fa-people-arrows mr-2"></i> จัดการชุมชนหลายจุด</button>
                             <button onclick="document.getElementById('fileInput').click()"
                                 class="bg-blue-800 text-white px-6 py-3.5 rounded-2xl font-bold shadow-xl flex items-center active:scale-95 transition text-shadow-none"><i
                                     class="fas fa-file-import mr-2"></i> นำเข้า CSV</button>
@@ -2143,7 +2149,8 @@
             <!-- Printable Template -->
             <div class="text-center mb-12 border-b-[3px] border-blue-900 pb-10">
                 <div class="flex items-center justify-center gap-6 mb-6">
-                    <img src="https://images.weserv.nl/?url=img5.pic.in.th/file/secure-sv1/logo458ee4aa05680920.jpg"
+                    <img src="brand-logo.svg"
+                        onerror="this.onerror=null;this.src='logo-fallback.svg';"
                         crossorigin="anonymous" class="h-28 w-28 object-contain rounded-2xl shadow-lg">
                     <div class="text-left">
                         <h1 class="text-4xl font-black text-slate-900 leading-tight">แบบทะเบียนประวัติจุดติดตั้ง</h1>
@@ -2811,12 +2818,13 @@
 
     <!-- COMMUNITY MANAGER MODAL -->
     <div id="communityManagerModal"
-        class="hidden fixed inset-0 bg-slate-900/70 z-[7000] flex items-center justify-center p-4 backdrop-blur-md no-print">
+        class="hidden fixed inset-0 bg-slate-900/70 z-[7000] flex items-center justify-center p-4 backdrop-blur-md no-print"
+        role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="community-manager-title">
         <div class="modal-container bg-white rounded-[2.5rem] shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-hidden">
             <div
                 class="modal-header bg-gradient-to-r from-teal-600 via-teal-500 to-emerald-500 text-white p-8 rounded-t-[2.5rem]">
                 <div>
-                    <h2 class="text-2xl font-black tracking-tight flex items-center gap-3">
+                    <h2 id="community-manager-title" class="text-2xl font-black tracking-tight flex items-center gap-3">
                         <span class="bg-white/20 w-12 h-12 rounded-2xl flex items-center justify-center"><i
                                 class="fas fa-people-roof text-xl"></i></span>
                         จัดการชุมชน (Community Manager)
@@ -2838,17 +2846,18 @@
                     <div class="flex gap-3">
                         <input type="text" id="community-name-input" placeholder="ชื่อชุมชน เช่น ชุมชนบ้านท่าฉนวน"
                             class="flex-1 bg-white border border-teal-200 rounded-xl px-4 py-3 text-sm font-bold outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20">
-                        <button onclick="window.addCommunity()"
+                        <button id="community-add-btn" onclick="window.addCommunity()"
                             class="bg-teal-600 text-white px-6 py-3 rounded-xl text-sm font-bold hover:bg-teal-700 transition active:scale-95 flex items-center gap-2 shadow-lg">
                             <i class="fas fa-plus"></i> เพิ่ม
                         </button>
                     </div>
+                    <p id="community-limit-note" class="mt-3 text-[11px] font-bold text-teal-700">เพิ่มได้สูงสุด 15 ชุมชน</p>
                 </div>
 
                 <!-- List -->
                 <div>
                     <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3"><i
-                            class="fas fa-list mr-1"></i> ชุมชนในระบบ (<span id="community-count">0</span> ชุมชน)</p>
+                            class="fas fa-list mr-1"></i> ชุมชนในระบบ (<span id="community-count">0</span>/15 ชุมชน)</p>
                     <div id="community-list" class="space-y-2">
                         <div class="py-12 text-center text-slate-300">
                             <i class="fas fa-spinner fa-spin text-3xl mb-3"></i>
@@ -2860,6 +2869,116 @@
 
             <div class="modal-footer bg-slate-50 border-t border-slate-200 p-5">
                 <button onclick="window.closeCommunityManager()"
+                    class="w-full bg-slate-800 text-white py-4 rounded-2xl font-black hover:bg-slate-700 transition">
+                    <i class="fas fa-check mr-2"></i> เสร็จสิ้น
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- BULK COMMUNITY MODAL -->
+    <div id="bulkCommunityModal"
+        class="hidden fixed inset-0 bg-slate-900/70 z-[6900] flex items-center justify-center p-4 backdrop-blur-md no-print"
+        role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="bulk-community-title">
+        <div class="modal-container bg-white rounded-[2.5rem] shadow-2xl w-full max-w-5xl max-h-[92vh] overflow-hidden">
+            <div
+                class="modal-header bg-gradient-to-r from-teal-700 via-teal-600 to-emerald-500 text-white p-8 rounded-t-[2.5rem]">
+                <div>
+                    <h2 id="bulk-community-title" class="text-2xl font-black tracking-tight flex items-center gap-3">
+                        <span class="bg-white/20 w-12 h-12 rounded-2xl flex items-center justify-center"><i
+                                class="fas fa-people-arrows text-xl"></i></span>
+                        จัดการชุมชนหลายจุดพร้อมกัน
+                    </h2>
+                    <p class="text-teal-100 text-xs font-bold mt-2 ml-[60px] uppercase tracking-widest">
+                        เลือกหลายจุดแล้วผูก / เปลี่ยน / ล้างชุมชนในครั้งเดียว</p>
+                </div>
+                <button type="button" onclick="window.closeBulkCommunityModal()"
+                    class="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center hover:bg-white/30 transition text-white">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+
+            <div class="modal-body p-6 overflow-y-auto space-y-6" style="max-height: calc(92vh - 220px);">
+                <div class="grid grid-cols-1 xl:grid-cols-[1.2fr_1fr] gap-6">
+                    <div class="bg-slate-50 border border-slate-200 rounded-[2rem] p-5 space-y-4">
+                        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+                            <div>
+                                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">รายการจุดติดตั้งที่เลือกได้</p>
+                                <p id="bulk-community-source-note" class="text-xs font-bold text-slate-500 mt-1">กำลังเตรียมข้อมูล...</p>
+                            </div>
+                            <button type="button" onclick="window.toggleAllBulkCommunityPoints()"
+                                class="bg-white border border-slate-200 text-slate-700 px-4 py-2 rounded-xl text-xs font-bold hover:border-teal-400 hover:text-teal-700 transition">
+                                เลือก/ยกเลิกทั้งหมด
+                            </button>
+                        </div>
+
+                        <div class="relative">
+                            <i class="fas fa-search absolute left-4 top-3.5 text-slate-300"></i>
+                            <input type="text" id="bulk-community-search" oninput="window.filterBulkCommunityPoints()"
+                                placeholder="ค้นหาหมายเลขพิกัด / ตำแหน่ง / OLT / ชุมชน"
+                                class="w-full pl-11 pr-4 py-3 bg-white border border-slate-200 rounded-2xl text-sm font-bold outline-none focus:border-teal-500">
+                        </div>
+
+                        <div id="bulk-community-point-list" class="space-y-2 max-h-[420px] overflow-y-auto pr-1">
+                            <div class="py-12 text-center text-slate-300">
+                                <i class="fas fa-spinner fa-spin text-3xl mb-3"></i>
+                                <p class="font-bold">กำลังโหลด...</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-teal-50 border border-teal-200 rounded-[2rem] p-5 space-y-5">
+                        <div>
+                            <p class="text-[10px] font-black text-teal-500 uppercase tracking-widest">การเปลี่ยนแปลงที่จะทำ</p>
+                            <h3 class="text-xl font-black text-slate-800 mt-2">อัปเดตชุมชนให้จุดที่เลือก</h3>
+                            <p class="text-sm text-slate-500 mt-1">เหมาะสำหรับเปลี่ยนชุมชนทั้งชุดหลังสำรวจภาคสนามหรือจัดกลุ่มข้อมูลใหม่</p>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="bg-white rounded-2xl border border-teal-100 p-4">
+                                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">เลือกแล้ว</p>
+                                <p id="bulk-community-selected-count" class="text-3xl font-black text-teal-700 mt-2">0</p>
+                                <p class="text-xs text-slate-400 mt-1">จุดติดตั้ง</p>
+                            </div>
+                            <div class="bg-white rounded-2xl border border-teal-100 p-4">
+                                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">รายการที่แสดง</p>
+                                <p id="bulk-community-visible-count" class="text-3xl font-black text-slate-800 mt-2">0</p>
+                                <p class="text-xs text-slate-400 mt-1">จุดติดตั้ง</p>
+                            </div>
+                        </div>
+
+                        <div class="space-y-2">
+                            <label for="bulk-community-action" class="text-[11px] font-black text-slate-500 uppercase tracking-wider ml-1">รูปแบบการอัปเดต</label>
+                            <select id="bulk-community-action" onchange="window.handleBulkCommunityActionChange()"
+                                class="w-full bg-white border border-slate-200 rounded-2xl px-4 py-3 text-sm font-bold outline-none focus:border-teal-500">
+                                <option value="assign">กำหนดชุมชนให้จุดที่เลือก</option>
+                                <option value="clear">ล้างชุมชนของจุดที่เลือก</option>
+                            </select>
+                        </div>
+
+                        <div id="bulk-community-target-wrap" class="space-y-2">
+                            <label for="bulk-community-target" class="text-[11px] font-black text-slate-500 uppercase tracking-wider ml-1">เลือกชุมชนปลายทาง</label>
+                            <select id="bulk-community-target"
+                                class="w-full bg-white border border-slate-200 rounded-2xl px-4 py-3 text-sm font-bold outline-none focus:border-teal-500">
+                                <option value="">-- เลือกชุมชน --</option>
+                            </select>
+                        </div>
+
+                        <div class="bg-white/80 rounded-2xl border border-teal-100 p-4">
+                            <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">สรุป</p>
+                            <p id="bulk-community-summary" class="text-sm font-bold text-slate-700 mt-2">ยังไม่ได้เลือกจุดติดตั้ง</p>
+                        </div>
+
+                        <button type="button" id="bulk-community-apply-btn" onclick="window.applyBulkCommunityUpdate()"
+                            class="w-full bg-gradient-to-r from-teal-600 to-emerald-500 text-white py-4 rounded-2xl font-black shadow-lg hover:shadow-teal-500/25 active:scale-95 transition flex items-center justify-center gap-2">
+                            <i class="fas fa-check-circle"></i> บันทึกการอัปเดตหลายจุด
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer bg-slate-50 border-t border-slate-200 p-5">
+                <button type="button" onclick="window.closeBulkCommunityModal()"
                     class="w-full bg-slate-800 text-white py-4 rounded-2xl font-black hover:bg-slate-700 transition">
                     <i class="fas fa-check mr-2"></i> เสร็จสิ้น
                 </button>
@@ -3318,7 +3437,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
-        import { getFirestore, collection, onSnapshot, doc, setDoc, deleteDoc, updateDoc, addDoc } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-firestore.js";
+        import { getFirestore, collection, onSnapshot, doc, setDoc, deleteDoc, updateDoc, addDoc, writeBatch } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-firestore.js";
         import { getAuth, signInAnonymously, onAuthStateChanged, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
 
         // --- 1. FIREBASE SETUP ---
@@ -5600,7 +5719,8 @@ function uploadEvidence(base64Data, fileName, pointNumber) {
                             <hr style="margin: 30px 0; border: none; border-top: 1px solid #eee;">
                         </div>
                         <div class="card">
-                            <img src="https://images.weserv.nl/?url=img5.pic.in.th/file/secure-sv1/logo458ee4aa05680920.jpg" 
+                            <img src="brand-logo.svg" 
+                                onerror="this.onerror=null;this.src='logo-fallback.svg';"
                                 crossorigin="anonymous"
                                 class="logo">
                             <h1>\u0e40\u0e17\u0e28\u0e1a\u0e32\u0e25\u0e40\u0e21\u0e37\u0e2d\u0e07\u0e2d\u0e38\u0e17\u0e31\u0e22\u0e18\u0e32\u0e19\u0e35</h1>
@@ -5784,7 +5904,8 @@ function uploadEvidence(base64Data, fileName, pointNumber) {
                 title: `QR Code แจ้งซ่อม จุดที่ #${pointNumber}`,
                 html: `<div id="capture-area" class="bg-white p-8 rounded-3xl border shadow-inner">
                             <div class="flex flex-col items-center">
-                                <img src="https://images.weserv.nl/?url=img5.pic.in.th/file/secure-sv1/logo458ee4aa05680920.jpg" 
+                                <img src="brand-logo.svg" 
+                                    onerror="this.onerror=null;this.src='logo-fallback.svg';"
                                     crossorigin="anonymous"
                                     class="h-16 mb-4 filter drop-shadow-sm">
                                 <h4 class="font-black text-blue-900 text-lg mb-1">เทศบาลเมืองอุทัยธานี</h4>
@@ -6284,13 +6405,9 @@ function uploadEvidence(base64Data, fileName, pointNumber) {
             renderRegistry();
         };
 
-        function renderRegistry() {
-            // Clone data to avoid mutating original
+        function getRegistryFilteredData() {
             let data = [...(window.speakerPoints || [])];
-
-            // Apply Search & Filters first
             const q = (document.getElementById('searchInput')?.value || "").toLowerCase();
-            // const fZone = document.getElementById('filterZone')?.value; // REMOVED
             const fType = document.getElementById('filterType')?.value;
             const fStatus = document.getElementById('filterStatus')?.value;
             const fWatt = document.getElementById('filterWatt')?.value;
@@ -6299,7 +6416,6 @@ function uploadEvidence(base64Data, fileName, pointNumber) {
             const filtered = data.filter(p => {
                 const dashMatch = currentDashFilter === 'all' || p.Status === currentDashFilter || p.InstallType === currentDashFilter;
                 const matchQuery = (p.Position || "").toLowerCase().includes(q) || String(p.Number).includes(q);
-                // const matchZone = fZone ? p.Zone == fZone : true; // REMOVED
                 const matchType = fType ? p.InstallType == fType : true;
                 const matchStatus = fStatus ? p.Status == fStatus : true;
                 const matchWatt = fWatt ? String(p.Speaker_size) == fWatt : true;
@@ -6323,6 +6439,12 @@ function uploadEvidence(base64Data, fileName, pointNumber) {
                 }
                 return 0;
             });
+
+            return filtered;
+        }
+
+        function renderRegistry() {
+            const filtered = getRegistryFilteredData();
 
             // PAGINATION LOGIC
             const totalItems = filtered.length;
@@ -6468,8 +6590,17 @@ function uploadEvidence(base64Data, fileName, pointNumber) {
             document.querySelectorAll('[id^="btn-"]').forEach(b => b.classList.replace('bg-blue-100', 'text-slate-400'));
             document.getElementById(`btn-${v}`).classList.add('bg-blue-100', 'text-blue-800');
             renderRegistry();
+            if (!document.getElementById('bulkCommunityModal')?.classList.contains('hidden')) {
+                window.refreshBulkCommunityPointList();
+            }
         }
-        window.filterData = function () { renderRegistry(); try { updateFilterIndicator(); } catch (e) { } }
+        window.filterData = function () {
+            renderRegistry();
+            if (!document.getElementById('bulkCommunityModal')?.classList.contains('hidden')) {
+                window.refreshBulkCommunityPointList();
+            }
+            try { updateFilterIndicator(); } catch (e) { }
+        }
 
         window.clearAdminFilters = function () {
             if (document.getElementById('filterZone')) document.getElementById('filterZone').value = "";
@@ -7632,6 +7763,111 @@ function uploadEvidence(base64Data, fileName, pointNumber) {
 
         // --- COMMUNITY MANAGEMENT ---
         window.communities = [];
+        window.communityMutationInFlight = false;
+        const COMMUNITY_LIMIT = 15;
+
+        function canManageCommunities() {
+            return !!(currentUser && currentUser.role === 'Admin');
+        }
+
+        function normalizeCommunityName(name) {
+            return (name || '').replace(/\s+/g, ' ').trim();
+        }
+
+        function findCommunityByName(name, excludeId = '') {
+            const normalizedName = normalizeCommunityName(name).toLocaleLowerCase('th');
+            return (window.communities || []).find(c => {
+                if (excludeId && c.id === excludeId) return false;
+                return normalizeCommunityName(c.name).toLocaleLowerCase('th') === normalizedName;
+            });
+        }
+
+        function setCommunityManagerBusy(isBusy) {
+            window.communityMutationInFlight = isBusy;
+            const input = document.getElementById('community-name-input');
+            if (input) input.disabled = isBusy;
+            document.querySelectorAll('#communityManagerModal button').forEach(btn => {
+                btn.disabled = isBusy;
+                btn.classList.toggle('opacity-60', isBusy);
+                btn.classList.toggle('cursor-not-allowed', isBusy);
+            });
+            const bulkApplyBtn = document.getElementById('bulk-community-apply-btn');
+            if (bulkApplyBtn) {
+                bulkApplyBtn.disabled = isBusy;
+                bulkApplyBtn.classList.toggle('opacity-60', isBusy);
+                bulkApplyBtn.classList.toggle('cursor-not-allowed', isBusy);
+            }
+            if (!isBusy) {
+                syncCommunityAddControls();
+                window.updateBulkCommunitySummary?.();
+            }
+        }
+
+        function syncCommunityAddControls() {
+            const input = document.getElementById('community-name-input');
+            const addBtn = document.getElementById('community-add-btn');
+            const note = document.getElementById('community-limit-note');
+            const limitReached = (window.communities || []).length >= COMMUNITY_LIMIT;
+
+            if (input) input.disabled = window.communityMutationInFlight || limitReached;
+            if (addBtn) {
+                addBtn.disabled = window.communityMutationInFlight || limitReached;
+                addBtn.classList.toggle('opacity-60', addBtn.disabled);
+                addBtn.classList.toggle('cursor-not-allowed', addBtn.disabled);
+            }
+            if (note) {
+                note.textContent = limitReached
+                    ? `ครบ ${COMMUNITY_LIMIT} ชุมชนแล้ว หากต้องการเพิ่มใหม่ให้ลบหรือปรับชื่อรายการเดิมก่อน`
+                    : `เพิ่มได้สูงสุด ${COMMUNITY_LIMIT} ชุมชน`;
+                note.className = `mt-3 text-[11px] font-bold ${limitReached ? 'text-orange-600' : 'text-teal-700'}`;
+            }
+        }
+
+        function createCommunityBatchAdapter() {
+            if (typeof writeBatch === 'function') {
+                return writeBatch(db);
+            }
+
+            const operations = [];
+            return {
+                update(ref, data) {
+                    operations.push(() => updateDoc(ref, data));
+                },
+                delete(ref) {
+                    operations.push(() => deleteDoc(ref));
+                },
+                set(ref, data, options) {
+                    operations.push(() => setDoc(ref, data, options));
+                },
+                async commit() {
+                    for (const operation of operations) {
+                        await operation();
+                    }
+                }
+            };
+        }
+
+        async function runCommunityBatches(pointItems, mutatePoint, mutateFirstBatch) {
+            const chunkSize = 450;
+            const chunks = [];
+            for (let i = 0; i < pointItems.length; i += chunkSize) {
+                chunks.push(pointItems.slice(i, i + chunkSize));
+            }
+
+            if (chunks.length === 0) {
+                const batch = createCommunityBatchAdapter();
+                if (mutateFirstBatch) mutateFirstBatch(batch);
+                await batch.commit();
+                return;
+            }
+
+            for (let i = 0; i < chunks.length; i++) {
+                const batch = createCommunityBatchAdapter();
+                if (i === 0 && mutateFirstBatch) mutateFirstBatch(batch);
+                chunks[i].forEach(item => mutatePoint(batch, item));
+                await batch.commit();
+            }
+        }
 
         window.populateCommunityDropdowns = function () {
             const items = window.communities || [];
@@ -7643,8 +7879,21 @@ function uploadEvidence(base64Data, fileName, pointNumber) {
                 items.forEach(c => {
                     formSelect.innerHTML += `<option value="${c.name}">${c.name}</option>`;
                 });
-                formSelect.value = currentVal;
+                const hasCurrentValue = items.some(c => c.name === currentVal);
+                formSelect.value = hasCurrentValue ? currentVal : '';
             }
+
+            const bulkSelect = document.getElementById('bulk-community-target');
+            if (bulkSelect) {
+                const currentVal = bulkSelect.value;
+                bulkSelect.innerHTML = '<option value="">-- เลือกชุมชน --</option>';
+                items.forEach(c => {
+                    bulkSelect.innerHTML += `<option value="${c.name}">${c.name}</option>`;
+                });
+                const hasCurrentValue = items.some(c => c.name === currentVal);
+                bulkSelect.value = hasCurrentValue ? currentVal : '';
+            }
+            window.updateBulkCommunitySummary?.();
         };
 
         window.renderCommunityList = function () {
@@ -7653,6 +7902,7 @@ function uploadEvidence(base64Data, fileName, pointNumber) {
             if (!container) return;
             const items = window.communities || [];
             if (countEl) countEl.textContent = items.length;
+            syncCommunityAddControls();
 
             if (items.length === 0) {
                 container.innerHTML = `
@@ -7667,71 +7917,294 @@ function uploadEvidence(base64Data, fileName, pointNumber) {
             // Count points per community
             const pointCounts = {};
             (window.speakerPoints || []).forEach(p => {
-                const c = p.Community || '';
+                const c = normalizeCommunityName(p.Community);
                 if (c) pointCounts[c] = (pointCounts[c] || 0) + 1;
             });
 
-            container.innerHTML = items.map((c, i) => `
-                <div class="flex items-center justify-between bg-white border border-slate-100 rounded-2xl p-4 hover:shadow-md transition group">
+            container.innerHTML = items.map((c, i) => {
+                const safeName = normalizeCommunityName(c.name);
+                return `
+                <div class="flex items-center justify-between gap-3 bg-white border border-slate-100 rounded-2xl p-4 hover:shadow-md transition">
                     <div class="flex items-center gap-3">
                         <div class="w-10 h-10 bg-teal-100 rounded-xl flex items-center justify-center text-teal-600 font-black text-sm">${i + 1}</div>
                         <div>
-                            <p class="font-bold text-slate-800" id="comm-name-${c.id}">${c.name}</p>
-                            <p class="text-[10px] text-slate-400 font-medium">${pointCounts[c.name] || 0} จุดติดตั้ง</p>
+                            <p class="font-bold text-slate-800" id="comm-name-${c.id}">${safeName}</p>
+                            <p class="text-[10px] text-slate-400 font-medium">${pointCounts[safeName] || 0} จุดติดตั้ง</p>
                         </div>
                     </div>
-                    <div class="flex gap-2 opacity-0 group-hover:opacity-100 transition">
-                        <button onclick="window.editCommunity('${c.id}', '${c.name.replace(/'/g, "\\'")}')"
-                            class="w-9 h-9 bg-blue-100 text-blue-600 rounded-xl flex items-center justify-center hover:bg-blue-200 transition text-sm">
-                            <i class="fas fa-pen"></i>
+                    <div class="flex shrink-0 gap-2">
+                        <button type="button" onclick='window.editCommunity(${JSON.stringify(c.id)}, ${JSON.stringify(safeName)})'
+                            class="min-w-[88px] h-9 px-3 bg-blue-100 text-blue-700 rounded-xl flex items-center justify-center gap-2 hover:bg-blue-200 transition text-sm font-bold">
+                            <i class="fas fa-pen"></i><span>แก้ไข</span>
                         </button>
-                        <button onclick="window.deleteCommunity('${c.id}', '${c.name.replace(/'/g, "\\'")}')"
-                            class="w-9 h-9 bg-red-100 text-red-600 rounded-xl flex items-center justify-center hover:bg-red-200 transition text-sm">
-                            <i class="fas fa-trash"></i>
+                        <button type="button" onclick='window.deleteCommunity(${JSON.stringify(c.id)}, ${JSON.stringify(safeName)})'
+                            class="min-w-[72px] h-9 px-3 bg-red-100 text-red-700 rounded-xl flex items-center justify-center gap-2 hover:bg-red-200 transition text-sm font-bold">
+                            <i class="fas fa-trash"></i><span>ลบ</span>
                         </button>
                     </div>
                 </div>
-            `).join('');
+            `;
+            }).join('');
         };
 
         window.openCommunityManager = function () {
-            if (!currentUser || currentUser.role !== 'Admin') {
+            if (!canManageCommunities()) {
                 Swal.fire({ icon: 'warning', title: 'สิทธิ์ไม่เพียงพอ', text: 'เฉพาะผู้ดูแลระบบ (Admin) เท่านั้นที่สามารถจัดการชุมชนได้', customClass: { container: 'swal-top-layer' } });
                 return;
             }
-            document.getElementById('communityManagerModal').classList.remove('hidden');
+            const modal = document.getElementById('communityManagerModal');
+            modal.classList.remove('hidden');
+            modal.setAttribute('aria-hidden', 'false');
+            setCommunityManagerBusy(false);
             window.renderCommunityList();
+            const input = document.getElementById('community-name-input');
+            if (input) input.focus();
         };
 
         window.closeCommunityManager = function () {
-            document.getElementById('communityManagerModal').classList.add('hidden');
+            if (window.communityMutationInFlight) return;
+            if (document.activeElement instanceof HTMLElement) {
+                document.activeElement.blur();
+            }
+            const modal = document.getElementById('communityManagerModal');
+            modal.classList.add('hidden');
+            modal.setAttribute('aria-hidden', 'true');
+            const input = document.getElementById('community-name-input');
+            if (input) input.value = '';
         };
 
         window.addCommunity = async function () {
+            if (!canManageCommunities() || window.communityMutationInFlight) return;
             const input = document.getElementById('community-name-input');
-            const name = (input.value || '').trim();
+            const name = normalizeCommunityName(input ? input.value : '');
+            if ((window.communities || []).length >= COMMUNITY_LIMIT) {
+                Swal.fire({ icon: 'warning', title: 'จำนวนชุมชนเต็มแล้ว', text: `ระบบรองรับได้สูงสุด ${COMMUNITY_LIMIT} ชุมชน`, customClass: { container: 'swal-top-layer' } });
+                syncCommunityAddControls();
+                return;
+            }
             if (!name) {
-                Swal.fire({ icon: 'warning', title: 'กรุณาระบุชื่อชุมชน', toast: true, position: 'top-end', timer: 1500, showConfirmButton: false });
+                Swal.fire({ icon: 'warning', title: 'กรุณาระบุชื่อชุมชน', toast: true, position: 'top-end', timer: 1500, showConfirmButton: false, customClass: { container: 'swal-top-layer' } });
                 return;
             }
-            // Check duplicate
-            if ((window.communities || []).find(c => c.name === name)) {
-                Swal.fire({ icon: 'error', title: 'ชื่อชุมชนซ้ำกัน', toast: true, position: 'top-end', timer: 1500, showConfirmButton: false });
+            if (findCommunityByName(name)) {
+                Swal.fire({ icon: 'error', title: 'ชื่อชุมชนซ้ำกัน', toast: true, position: 'top-end', timer: 1500, showConfirmButton: false, customClass: { container: 'swal-top-layer' } });
                 return;
             }
+
+            setCommunityManagerBusy(true);
             try {
                 const commRef = collection(db, 'artifacts', appId, 'public', 'data', 'communities');
-                await addDoc(commRef, { name: name, createdAt: new Date().toISOString() });
-                input.value = '';
-                Swal.fire({ icon: 'success', title: `เพิ่ม "${name}" แล้ว`, toast: true, position: 'top-end', timer: 1500, showConfirmButton: false });
+                await addDoc(commRef, { name: name, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() });
+                if (input) input.value = '';
+                Swal.fire({ icon: 'success', title: `เพิ่ม "${name}" แล้ว`, toast: true, position: 'top-end', timer: 1500, showConfirmButton: false, customClass: { container: 'swal-top-layer' } });
             } catch (err) {
                 console.error('Add community error:', err);
-                Swal.fire({ icon: 'error', title: 'เกิดข้อผิดพลาด', text: err.message });
+                Swal.fire({ icon: 'error', title: 'เกิดข้อผิดพลาด', text: err.message, customClass: { container: 'swal-top-layer' } });
+            } finally {
+                setCommunityManagerBusy(false);
+            }
+        };
+
+        window.openBulkCommunityModal = function () {
+            if (!canManageCommunities()) {
+                Swal.fire({ icon: 'warning', title: 'สิทธิ์ไม่เพียงพอ', text: 'เฉพาะผู้ดูแลระบบ (Admin) เท่านั้นที่สามารถจัดการชุมชนหลายจุดได้', customClass: { container: 'swal-top-layer' } });
+                return;
+            }
+            const modal = document.getElementById('bulkCommunityModal');
+            if (!modal) return;
+            modal.classList.remove('hidden');
+            modal.setAttribute('aria-hidden', 'false');
+            window.populateCommunityDropdowns();
+            window.handleBulkCommunityActionChange();
+            window.refreshBulkCommunityPointList();
+            const search = document.getElementById('bulk-community-search');
+            if (search) search.focus();
+        };
+
+        window.closeBulkCommunityModal = function () {
+            const modal = document.getElementById('bulkCommunityModal');
+            if (!modal || window.communityMutationInFlight) return;
+            if (document.activeElement instanceof HTMLElement) {
+                document.activeElement.blur();
+            }
+            modal.classList.add('hidden');
+            modal.setAttribute('aria-hidden', 'true');
+            const search = document.getElementById('bulk-community-search');
+            if (search) search.value = '';
+        };
+
+        window.updateBulkCommunitySummary = function () {
+            const selected = Array.from(document.querySelectorAll('input[name="bulk-community-point-check"]:checked'));
+            const visible = Array.from(document.querySelectorAll('.bulk-community-item')).filter(item => !item.classList.contains('hidden'));
+            const selectedCountEl = document.getElementById('bulk-community-selected-count');
+            const visibleCountEl = document.getElementById('bulk-community-visible-count');
+            const summaryEl = document.getElementById('bulk-community-summary');
+            const applyBtn = document.getElementById('bulk-community-apply-btn');
+            const action = document.getElementById('bulk-community-action')?.value || 'assign';
+            const target = normalizeCommunityName(document.getElementById('bulk-community-target')?.value || '');
+
+            if (selectedCountEl) selectedCountEl.textContent = String(selected.length);
+            if (visibleCountEl) visibleCountEl.textContent = String(visible.length);
+
+            let summaryText = 'ยังไม่ได้เลือกจุดติดตั้ง';
+            if (selected.length > 0) {
+                summaryText = action === 'clear'
+                    ? `กำลังจะล้างชุมชนของ ${selected.length} จุดติดตั้ง`
+                    : target
+                        ? `กำลังจะกำหนด ${selected.length} จุดติดตั้ง ไปยังชุมชน "${target}"`
+                        : `กรุณาเลือกชุมชนปลายทางสำหรับ ${selected.length} จุดติดตั้ง`;
+            }
+            if (summaryEl) summaryEl.textContent = summaryText;
+
+            if (applyBtn && !window.communityMutationInFlight) {
+                const disable = selected.length === 0 || (action === 'assign' && !target);
+                applyBtn.disabled = disable;
+                applyBtn.classList.toggle('opacity-60', disable);
+                applyBtn.classList.toggle('cursor-not-allowed', disable);
+            }
+        };
+
+        window.filterBulkCommunityPoints = function () {
+            const query = (document.getElementById('bulk-community-search')?.value || '').toLocaleLowerCase('th');
+            document.querySelectorAll('.bulk-community-item').forEach(item => {
+                const searchText = (item.getAttribute('data-search') || '').toLocaleLowerCase('th');
+                item.classList.toggle('hidden', !!query && !searchText.includes(query));
+            });
+            window.updateBulkCommunitySummary();
+        };
+
+        window.toggleAllBulkCommunityPoints = function () {
+            const visibleCheckboxes = Array.from(document.querySelectorAll('input[name="bulk-community-point-check"]'))
+                .filter(input => !input.closest('.bulk-community-item')?.classList.contains('hidden'));
+            const allChecked = visibleCheckboxes.length > 0 && visibleCheckboxes.every(input => input.checked);
+            visibleCheckboxes.forEach(input => {
+                input.checked = !allChecked;
+            });
+            window.updateBulkCommunitySummary();
+        };
+
+        window.refreshBulkCommunityPointList = function () {
+            const container = document.getElementById('bulk-community-point-list');
+            const sourceNote = document.getElementById('bulk-community-source-note');
+            if (!container) return;
+
+            const filteredPoints = getRegistryFilteredData();
+            if (sourceNote) {
+                sourceNote.textContent = filteredPoints.length > 0
+                    ? `ใช้รายการตามตัวกรองในหน้า Registry ขณะนี้ ${filteredPoints.length} จุด`
+                    : 'ไม่พบรายการตามตัวกรองปัจจุบัน';
+            }
+
+            if (filteredPoints.length === 0) {
+                container.innerHTML = `
+                    <div class="py-12 text-center text-slate-300">
+                        <i class="fas fa-inbox text-4xl mb-3"></i>
+                        <p class="font-bold">ไม่มีจุดติดตั้งตามตัวกรองปัจจุบัน</p>
+                        <p class="text-xs">ลองล้างตัวกรองหรือค้นหาใหม่แล้วเปิดอีกครั้ง</p>
+                    </div>`;
+                window.updateBulkCommunitySummary();
+                return;
+            }
+
+            container.innerHTML = filteredPoints.map(point => {
+                const community = normalizeCommunityName(point.Community) || 'ยังไม่กำหนด';
+                const searchText = [
+                    point.Number,
+                    point.Position || '',
+                    point.OLT || '',
+                    point.Community || '',
+                    point.InventoryNumber || ''
+                ].join(' ');
+                return `
+                    <label class="bulk-community-item flex items-center gap-3 bg-white border border-slate-100 rounded-2xl p-4 hover:border-teal-200 hover:bg-teal-50/40 cursor-pointer transition"
+                        data-search="${searchText}">
+                        <input type="checkbox" name="bulk-community-point-check" value="${point.id}" onchange="window.updateBulkCommunitySummary()"
+                            class="w-5 h-5 rounded border-slate-300 text-teal-600 focus:ring-teal-500">
+                        <div class="flex-1 min-w-0">
+                            <div class="flex flex-wrap items-center justify-between gap-2">
+                                <p class="font-black text-slate-800">#${point.Number} ${point.Position || 'ไม่ระบุตำแหน่ง'}</p>
+                                <span class="text-[10px] font-black uppercase tracking-widest text-slate-400">${point.OLT || '-'}</span>
+                            </div>
+                            <div class="flex flex-wrap items-center gap-2 mt-2 text-xs">
+                                <span class="px-2 py-1 rounded-full bg-teal-100 text-teal-700 font-bold">${community}</span>
+                                <span class="text-slate-400 font-medium">${point.InventoryNumber || 'ไม่มีทะเบียนครุภัณฑ์'}</span>
+                            </div>
+                        </div>
+                    </label>`;
+            }).join('');
+
+            window.filterBulkCommunityPoints();
+            window.updateBulkCommunitySummary();
+        };
+
+        window.handleBulkCommunityActionChange = function () {
+            const action = document.getElementById('bulk-community-action')?.value || 'assign';
+            const targetWrap = document.getElementById('bulk-community-target-wrap');
+            if (targetWrap) targetWrap.classList.toggle('hidden', action === 'clear');
+            window.updateBulkCommunitySummary();
+        };
+
+        window.applyBulkCommunityUpdate = async function () {
+            if (!canManageCommunities() || window.communityMutationInFlight) return;
+
+            const selectedIds = Array.from(document.querySelectorAll('input[name="bulk-community-point-check"]:checked')).map(input => input.value);
+            const action = document.getElementById('bulk-community-action')?.value || 'assign';
+            const targetCommunity = normalizeCommunityName(document.getElementById('bulk-community-target')?.value || '');
+
+            if (selectedIds.length === 0) {
+                Swal.fire({ icon: 'warning', title: 'ยังไม่ได้เลือกจุดติดตั้ง', text: 'กรุณาเลือกอย่างน้อย 1 จุดก่อนบันทึก', customClass: { container: 'swal-top-layer' } });
+                return;
+            }
+            if (action === 'assign' && !targetCommunity) {
+                Swal.fire({ icon: 'warning', title: 'กรุณาเลือกชุมชนปลายทาง', customClass: { container: 'swal-top-layer' } });
+                return;
+            }
+
+            const selectedPoints = (window.speakerPoints || []).filter(point => selectedIds.includes(point.id));
+            const targetValue = action === 'clear' ? '' : targetCommunity;
+            const result = await Swal.fire({
+                title: 'ยืนยันการอัปเดตหลายจุด',
+                text: action === 'clear'
+                    ? `ต้องการล้างชุมชนของ ${selectedPoints.length} จุดติดตั้งหรือไม่`
+                    : `ต้องการกำหนด ${selectedPoints.length} จุดติดตั้ง ไปยัง "${targetCommunity}" หรือไม่`,
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: 'ยืนยัน',
+                cancelButtonText: 'ยกเลิก',
+                confirmButtonColor: '#0d9488',
+                customClass: { container: 'swal-top-layer' }
+            });
+            if (!result.isConfirmed) return;
+
+            setCommunityManagerBusy(true);
+            try {
+                await runCommunityBatches(
+                    selectedPoints,
+                    (batch, point) => {
+                        const pointRef = doc(db, 'artifacts', appId, 'public', 'data', 'speaker_points', point.id);
+                        batch.update(pointRef, { Community: targetValue, updatedAt: new Date().toISOString() });
+                    }
+                );
+                Swal.fire({
+                    icon: 'success',
+                    title: 'อัปเดตชุมชนสำเร็จ',
+                    text: action === 'clear'
+                        ? `ล้างชุมชนแล้ว ${selectedPoints.length} จุด`
+                        : `กำหนดชุมชน "${targetCommunity}" แล้ว ${selectedPoints.length} จุด`,
+                    customClass: { container: 'swal-top-layer' }
+                });
+                window.refreshBulkCommunityPointList();
+            } catch (err) {
+                console.error('Bulk community update error:', err);
+                Swal.fire({ icon: 'error', title: 'เกิดข้อผิดพลาด', text: err.message, customClass: { container: 'swal-top-layer' } });
+            } finally {
+                setCommunityManagerBusy(false);
             }
         };
 
         window.editCommunity = async function (id, currentName) {
-            const { value: newName } = await Swal.fire({
+            if (!canManageCommunities() || window.communityMutationInFlight) return;
+            const { value: submittedName } = await Swal.fire({
                 title: 'แก้ไขชื่อชุมชน',
                 input: 'text',
                 inputLabel: 'ชื่อชุมชนใหม่',
@@ -7740,27 +8213,44 @@ function uploadEvidence(base64Data, fileName, pointNumber) {
                 confirmButtonText: 'บันทึก',
                 cancelButtonText: 'ยกเลิก',
                 confirmButtonColor: '#0d9488',
-                inputValidator: (val) => !val && 'กรุณาระบุชื่อชุมชน'
-            });
-            if (!newName || newName === currentName) return;
-            try {
-                const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'communities', id);
-                await updateDoc(docRef, { name: newName });
-                // Also update all speaker points with this community
-                const pointsToUpdate = (window.speakerPoints || []).filter(p => p.Community === currentName);
-                for (const p of pointsToUpdate) {
-                    const pRef = doc(db, 'artifacts', appId, 'public', 'data', 'speaker_points', p.id);
-                    await updateDoc(pRef, { Community: newName });
+                customClass: { container: 'swal-top-layer' },
+                inputValidator: (val) => {
+                    const candidate = normalizeCommunityName(val);
+                    if (!candidate) return 'กรุณาระบุชื่อชุมชน';
+                    if (findCommunityByName(candidate, id)) return 'มีชื่อชุมชนนี้ในระบบแล้ว';
+                    return null;
                 }
-                Swal.fire({ icon: 'success', title: `เปลี่ยนเป็น "${newName}" แล้ว`, toast: true, position: 'top-end', timer: 1500, showConfirmButton: false });
+            });
+
+            const newName = normalizeCommunityName(submittedName);
+            if (!newName || newName === normalizeCommunityName(currentName)) return;
+
+            setCommunityManagerBusy(true);
+            try {
+                const pointsToUpdate = (window.speakerPoints || []).filter(p => normalizeCommunityName(p.Community) === normalizeCommunityName(currentName));
+                await runCommunityBatches(
+                    pointsToUpdate,
+                    (batch, point) => {
+                        const pRef = doc(db, 'artifacts', appId, 'public', 'data', 'speaker_points', point.id);
+                        batch.update(pRef, { Community: newName });
+                    },
+                    (batch) => {
+                        const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'communities', id);
+                        batch.update(docRef, { name: newName, updatedAt: new Date().toISOString() });
+                    }
+                );
+                Swal.fire({ icon: 'success', title: `เปลี่ยนเป็น "${newName}" แล้ว`, toast: true, position: 'top-end', timer: 1500, showConfirmButton: false, customClass: { container: 'swal-top-layer' } });
             } catch (err) {
                 console.error('Edit community error:', err);
-                Swal.fire({ icon: 'error', title: 'เกิดข้อผิดพลาด', text: err.message });
+                Swal.fire({ icon: 'error', title: 'เกิดข้อผิดพลาด', text: err.message, customClass: { container: 'swal-top-layer' } });
+            } finally {
+                setCommunityManagerBusy(false);
             }
         };
 
         window.deleteCommunity = async function (id, name) {
-            const pointCount = (window.speakerPoints || []).filter(p => p.Community === name).length;
+            if (!canManageCommunities() || window.communityMutationInFlight) return;
+            const pointCount = (window.speakerPoints || []).filter(p => normalizeCommunityName(p.Community) === normalizeCommunityName(name)).length;
             const result = await Swal.fire({
                 title: `ลบชุมชน "${name}"?`,
                 html: pointCount > 0
@@ -7770,28 +8260,64 @@ function uploadEvidence(base64Data, fileName, pointNumber) {
                 showCancelButton: true,
                 confirmButtonText: 'ลบเลย',
                 cancelButtonText: 'ยกเลิก',
-                confirmButtonColor: '#ef4444'
+                confirmButtonColor: '#ef4444',
+                customClass: { container: 'swal-top-layer' }
             });
             if (!result.isConfirmed) return;
+
+            setCommunityManagerBusy(true);
             try {
-                const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'communities', id);
-                await deleteDoc(docRef);
-                // Clear community from points
-                if (pointCount > 0) {
-                    const pointsToUpdate = (window.speakerPoints || []).filter(p => p.Community === name);
-                    for (const p of pointsToUpdate) {
-                        const pRef = doc(db, 'artifacts', appId, 'public', 'data', 'speaker_points', p.id);
-                        await updateDoc(pRef, { Community: '' });
+                const pointsToUpdate = (window.speakerPoints || []).filter(p => normalizeCommunityName(p.Community) === normalizeCommunityName(name));
+                await runCommunityBatches(
+                    pointsToUpdate,
+                    (batch, point) => {
+                        const pRef = doc(db, 'artifacts', appId, 'public', 'data', 'speaker_points', point.id);
+                        batch.update(pRef, { Community: '' });
+                    },
+                    (batch) => {
+                        const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'communities', id);
+                        batch.delete(docRef);
                     }
-                }
-                Swal.fire({ icon: 'success', title: `ลบ "${name}" แล้ว`, toast: true, position: 'top-end', timer: 1500, showConfirmButton: false });
+                );
+                Swal.fire({ icon: 'success', title: `ลบ "${name}" แล้ว`, toast: true, position: 'top-end', timer: 1500, showConfirmButton: false, customClass: { container: 'swal-top-layer' } });
             } catch (err) {
                 console.error('Delete community error:', err);
-                Swal.fire({ icon: 'error', title: 'เกิดข้อผิดพลาด', text: err.message });
+                Swal.fire({ icon: 'error', title: 'เกิดข้อผิดพลาด', text: err.message, customClass: { container: 'swal-top-layer' } });
+            } finally {
+                setCommunityManagerBusy(false);
             }
         };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const communityInput = document.getElementById('community-name-input');
+            if (!communityInput || communityInput.dataset.communityEnhanced === 'true') return;
+            communityInput.dataset.communityEnhanced = 'true';
+            communityInput.addEventListener('keydown', (event) => {
+                if (event.key === 'Enter') {
+                    event.preventDefault();
+                    window.addCommunity();
+                }
+            });
+
+            const bulkTarget = document.getElementById('bulk-community-target');
+            if (bulkTarget && bulkTarget.dataset.communityEnhanced !== 'true') {
+                bulkTarget.dataset.communityEnhanced = 'true';
+                bulkTarget.addEventListener('change', () => window.updateBulkCommunitySummary());
+            }
+
+            const bulkSearch = document.getElementById('bulk-community-search');
+            if (bulkSearch && bulkSearch.dataset.communityEnhanced !== 'true') {
+                bulkSearch.dataset.communityEnhanced = 'true';
+                bulkSearch.addEventListener('keydown', (event) => {
+                    if (event.key === 'Enter') {
+                        event.preventDefault();
+                    }
+                });
+            }
+        });
 
     </script>
 </body>
 
 </html>
+
