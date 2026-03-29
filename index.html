@@ -690,10 +690,6 @@
                 <button onclick="showView('dashboard'); closeSidebarMobile();" data-view="dashboard">
                     <i class="fas fa-chart-pie"></i> ข้อมูลเชิงลึก (Insights)
                 </button>
-                <button onclick="showHub(); activateHubTab('data'); closeSidebarMobile();" id="nav-registry"
-                    data-view="data">
-                    <i class="fas fa-list-ul"></i> ทะเบียนพิกัด
-                </button>
                 <button onclick="showView('tickets'); closeSidebarMobile();" id="nav-tickets" data-view="tickets">
                     <i class="fas fa-ticket"></i> รายการแจ้งซ่อม (Tickets)
                 </button>
@@ -1372,6 +1368,10 @@
                             <select id="filterOLT" onchange="filterData()"
                                 class="bg-white border rounded-xl px-4 py-2 text-xs font-bold shadow-sm outline-none focus:border-blue-500">
                                 <option value="">ทุก OLT Node</option>
+                            </select>
+                            <select id="filterCommunity" onchange="filterData()"
+                                class="bg-white border rounded-xl px-4 py-2 text-xs font-bold shadow-sm outline-none focus:border-blue-500">
+                                <option value="">ทุกชุมชน</option>
                             </select>
                             <button onclick="window.clearAdminFilters()"
                                 class="bg-red-50 text-red-600 px-4 py-2 rounded-xl text-xs font-bold hover:bg-red-600 hover:text-white transition flex items-center gap-2 shadow-sm">
@@ -3062,6 +3062,14 @@
                                 class="block text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1 ml-1">OLT
                                 Node</label>
                             <select id="adv-filter-olt" onchange="window.applyAdvancedFilters()"
+                                class="w-full bg-white border border-slate-200 rounded-xl px-3 py-2.5 text-xs font-bold outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20">
+                                <option value="">ทั้งหมด</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label
+                                class="block text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1 ml-1">ชุมชน</label>
+                            <select id="adv-filter-community" onchange="window.applyAdvancedFilters()"
                                 class="w-full bg-white border border-slate-200 rounded-xl px-3 py-2.5 text-xs font-bold outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20">
                                 <option value="">ทั้งหมด</option>
                             </select>
@@ -6412,15 +6420,18 @@ function uploadEvidence(base64Data, fileName, pointNumber) {
             const fStatus = document.getElementById('filterStatus')?.value;
             const fWatt = document.getElementById('filterWatt')?.value;
             const fOLT = document.getElementById('filterOLT')?.value;
+            const fCommunity = document.getElementById('filterCommunity')?.value;
 
             const filtered = data.filter(p => {
                 const dashMatch = currentDashFilter === 'all' || p.Status === currentDashFilter || p.InstallType === currentDashFilter;
-                const matchQuery = (p.Position || "").toLowerCase().includes(q) || String(p.Number).includes(q);
+                const normalizedCommunity = normalizeCommunityName ? normalizeCommunityName(p.Community) : (p.Community || '');
+                const matchQuery = (p.Position || "").toLowerCase().includes(q) || String(p.Number).includes(q) || normalizedCommunity.toLowerCase().includes(q);
                 const matchType = fType ? p.InstallType == fType : true;
                 const matchStatus = fStatus ? p.Status == fStatus : true;
                 const matchWatt = fWatt ? String(p.Speaker_size) == fWatt : true;
                 const matchOLT = fOLT ? (p.OLT || '') == fOLT : true;
-                return dashMatch && matchQuery && matchType && matchStatus && matchWatt && matchOLT;
+                const matchCommunity = fCommunity ? normalizedCommunity == fCommunity : true;
+                return dashMatch && matchQuery && matchType && matchStatus && matchWatt && matchOLT && matchCommunity;
             });
 
             // Apply Sorting
@@ -6608,6 +6619,7 @@ function uploadEvidence(base64Data, fileName, pointNumber) {
             if (document.getElementById('filterStatus')) document.getElementById('filterStatus').value = "";
             if (document.getElementById('filterWatt')) document.getElementById('filterWatt').value = "";
             if (document.getElementById('filterOLT')) document.getElementById('filterOLT').value = "";
+            if (document.getElementById('filterCommunity')) document.getElementById('filterCommunity').value = "";
             if (document.getElementById('searchInput')) document.getElementById('searchInput').value = "";
             window.filterData();
             Swal.fire({
@@ -7274,6 +7286,7 @@ function uploadEvidence(base64Data, fileName, pointNumber) {
         function populateOLTDropdowns() {
             const points = window.speakerPoints || [];
             const olts = [...new Set(points.map(p => p.OLT || '').filter(v => v))].sort();
+            const communities = [...new Set(points.map(p => normalizeCommunityName ? normalizeCommunityName(p.Community) : (p.Community || '')).filter(v => v))].sort((a, b) => a.localeCompare(b, 'th'));
 
             // Populate Advanced Report OLT dropdown
             const advOLT = document.getElementById('adv-filter-olt');
@@ -7286,6 +7299,17 @@ function uploadEvidence(base64Data, fileName, pointNumber) {
                 advOLT.value = currentVal;
             }
 
+            // Populate Advanced Report Community dropdown
+            const advCommunity = document.getElementById('adv-filter-community');
+            if (advCommunity) {
+                const currentVal = advCommunity.value;
+                advCommunity.innerHTML = '<option value="">ทั้งหมด</option>';
+                communities.forEach(c => {
+                    advCommunity.innerHTML += `<option value="${c}">${c}</option>`;
+                });
+                advCommunity.value = communities.includes(currentVal) ? currentVal : '';
+            }
+
             // Populate Registry OLT dropdown
             const regOLT = document.getElementById('filterOLT');
             if (regOLT) {
@@ -7296,6 +7320,17 @@ function uploadEvidence(base64Data, fileName, pointNumber) {
                 });
                 regOLT.value = currentVal;
             }
+
+            // Populate Registry Community dropdown
+            const regCommunity = document.getElementById('filterCommunity');
+            if (regCommunity) {
+                const currentVal = regCommunity.value;
+                regCommunity.innerHTML = '<option value="">ทุกชุมชน</option>';
+                communities.forEach(c => {
+                    regCommunity.innerHTML += `<option value="${c}">${c}</option>`;
+                });
+                regCommunity.value = communities.includes(currentVal) ? currentVal : '';
+            }
         }
 
         function getAdvancedFilteredData() {
@@ -7304,6 +7339,7 @@ function uploadEvidence(base64Data, fileName, pointNumber) {
             const fStatus = document.getElementById('adv-filter-status')?.value;
             const fType = document.getElementById('adv-filter-type')?.value;
             const fOLT = document.getElementById('adv-filter-olt')?.value;
+            const fCommunity = document.getElementById('adv-filter-community')?.value;
             const fAmount = document.getElementById('adv-filter-amount')?.value;
             const fSearch = (document.getElementById('adv-filter-search')?.value || '').toLowerCase();
 
@@ -7312,6 +7348,7 @@ function uploadEvidence(base64Data, fileName, pointNumber) {
                 const matchStatus = fStatus ? p.Status == fStatus : true;
                 const matchType = fType ? p.InstallType == fType : true;
                 const matchOLT = fOLT ? (p.OLT || '') == fOLT : true;
+                const matchCommunity = fCommunity ? normalizeCommunityName(p.Community) == fCommunity : true;
                 let matchAmount = true;
                 if (fAmount === '5+') {
                     matchAmount = (parseInt(p.Speakers_amount) || 0) >= 5;
@@ -7323,9 +7360,10 @@ function uploadEvidence(base64Data, fileName, pointNumber) {
                     String(p.Number).includes(fSearch) ||
                     (p.InventoryNumber || '').toLowerCase().includes(fSearch) ||
                     (p.SerialNumber || '').toLowerCase().includes(fSearch) ||
-                    (p.OLT || '').toLowerCase().includes(fSearch)
+                    (p.OLT || '').toLowerCase().includes(fSearch) ||
+                    normalizeCommunityName(p.Community).toLowerCase().includes(fSearch)
                 ) : true;
-                return matchWatt && matchStatus && matchType && matchOLT && matchAmount && matchSearch;
+                return matchWatt && matchStatus && matchType && matchOLT && matchCommunity && matchAmount && matchSearch;
             }).sort((a, b) => (parseInt(a.Number) || 0) - (parseInt(b.Number) || 0));
         }
 
@@ -7414,12 +7452,14 @@ function uploadEvidence(base64Data, fileName, pointNumber) {
             const fStatus = document.getElementById('adv-filter-status')?.value;
             const fType = document.getElementById('adv-filter-type')?.value;
             const fOLT = document.getElementById('adv-filter-olt')?.value;
+            const fCommunity = document.getElementById('adv-filter-community')?.value;
             const fAmount = document.getElementById('adv-filter-amount')?.value;
             const fSearch = document.getElementById('adv-filter-search')?.value;
             if (fWatt) activeFilters.push(`\u0e02\u0e19\u0e32\u0e14: ${fWatt}W`);
             if (fStatus) activeFilters.push(`\u0e2a\u0e16\u0e32\u0e19\u0e30: ${translateStatus(fStatus)}`);
             if (fType) activeFilters.push(`\u0e1b\u0e23\u0e30\u0e40\u0e20\u0e17: ${translateInstallType(fType)}`);
             if (fOLT) activeFilters.push(`OLT: ${fOLT}`);
+            if (fCommunity) activeFilters.push(`\u0e0a\u0e38\u0e21\u0e0a\u0e19: ${fCommunity}`);
             if (fAmount) activeFilters.push(`\u0e08\u0e33\u0e19\u0e27\u0e19: ${fAmount} \u0e15\u0e31\u0e27`);
             if (fSearch) activeFilters.push(`\u0e04\u0e49\u0e19\u0e2b\u0e32: "${fSearch}"`);
             if (activeFilters.length > 0) {
@@ -7480,6 +7520,7 @@ function uploadEvidence(base64Data, fileName, pointNumber) {
             document.getElementById('adv-filter-status').value = '';
             document.getElementById('adv-filter-type').value = '';
             document.getElementById('adv-filter-olt').value = '';
+            document.getElementById('adv-filter-community').value = '';
             document.getElementById('adv-filter-amount').value = '';
             document.getElementById('adv-filter-search').value = '';
             const groupByEl = document.getElementById('adv-group-by');
