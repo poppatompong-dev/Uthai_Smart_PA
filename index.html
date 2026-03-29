@@ -3559,6 +3559,41 @@
             }, (error) => console.error("User Sync Error:", error));
         }
 
+        function compareCommunityNames(nameA, nameB) {
+            const normalize = (value) => (value || '').replace(/\s+/g, ' ').trim();
+            const a = normalize(nameA);
+            const b = normalize(nameB);
+            const numA = (a.match(/\d+/) || [])[0];
+            const numB = (b.match(/\d+/) || [])[0];
+            const rankA = typeof numA !== 'undefined' ? parseInt(numA, 10) : Number.POSITIVE_INFINITY;
+            const rankB = typeof numB !== 'undefined' ? parseInt(numB, 10) : Number.POSITIVE_INFINITY;
+
+            if (rankA !== rankB) return rankA - rankB;
+            return a.localeCompare(b, 'th', { numeric: true, sensitivity: 'base' });
+        }
+
+        function sortCommunityEntries(entries) {
+            return [...(entries || [])].sort((a, b) => compareCommunityNames(a?.name, b?.name));
+        }
+
+        window.sortCommunityLabels = function(labels) {
+            return [...(labels || [])].sort((a, b) => compareCommunityNames(a, b));
+        }
+
+        window.getCurrentCommunityCount = function () {
+            const normalize = (value) => normalizeCommunityName ? normalizeCommunityName(value) : (value || '').trim();
+            const managedCommunities = (window.communities || [])
+                .map(item => normalize(item?.name))
+                .filter(Boolean);
+            const managedSet = new Set(managedCommunities.map(name => name.toLocaleLowerCase('th')));
+            if (managedSet.size > 0) return managedSet.size;
+
+            const pointCommunities = (window.speakerPoints || [])
+                .map(point => normalize(point?.Community))
+                .filter(Boolean);
+            return new Set(pointCommunities.map(name => name.toLocaleLowerCase('th'))).size;
+        };
+
         function startCommunitySync() {
             const commRef = collection(db, 'artifacts', appId, 'public', 'data', 'communities');
             onSnapshot(commRef, (snapshot) => {
@@ -3566,8 +3601,7 @@
                 snapshot.forEach(doc => {
                     items.push({ id: doc.id, ...doc.data() });
                 });
-                items.sort((a, b) => (a.name || '').localeCompare(b.name || '', 'th'));
-                window.communities = items;
+                window.communities = sortCommunityEntries(items);
                 window.populateCommunityDropdowns();
                 window.renderCommunityList();
                 window.updateInsights();
@@ -4088,7 +4122,7 @@ function uploadEvidence(base64Data, fileName, pointNumber) {
 
             const totalPoints = data.length;
             const totalSpeakers = data.reduce((acc, p) => acc + (parseInt(p.Speakers_amount) || 2), 0);
-            const communityCount = (window.communities || []).length || new Set(data.map(p => p.Community).filter(v => v)).size || 0;
+            const communityCount = window.getCurrentCommunityCount();
 
             setVal('db-total-speakers', totalSpeakers.toLocaleString());
             setVal('db-total-points', totalPoints.toLocaleString());
@@ -7286,7 +7320,16 @@ function uploadEvidence(base64Data, fileName, pointNumber) {
         function populateOLTDropdowns() {
             const points = window.speakerPoints || [];
             const olts = [...new Set(points.map(p => p.OLT || '').filter(v => v))].sort();
-            const communities = [...new Set(points.map(p => normalizeCommunityName ? normalizeCommunityName(p.Community) : (p.Community || '')).filter(v => v))].sort((a, b) => a.localeCompare(b, 'th'));
+            const managedCommunityNames = (window.communities || [])
+                .map(item => normalizeCommunityName ? normalizeCommunityName(item?.name) : (item?.name || ''))
+                .filter(v => v);
+            const fallbackCommunityNames = points
+                .map(p => normalizeCommunityName ? normalizeCommunityName(p.Community) : (p.Community || ''))
+                .filter(v => v);
+            const communitySet = managedCommunityNames.length > 0
+                ? [...new Set(managedCommunityNames)]
+                : [...new Set(fallbackCommunityNames)];
+            const communities = sortCommunityLabels(communitySet);
 
             // Populate Advanced Report OLT dropdown
             const advOLT = document.getElementById('adv-filter-olt');
@@ -7751,7 +7794,7 @@ function uploadEvidence(base64Data, fileName, pointNumber) {
                 const totalPts = points.length;
                 const opPts = points.filter(p => p.Status === 'Operational').length;
                 const totalSpk = points.reduce((s, p) => s + (parseInt(p.Speakers_amount) || 0), 0);
-                const comms = (window.communities || []).length;
+                const comms = window.getCurrentCommunityCount();
 
                 const stats = [
                     { icon: 'จุดติดตั้ง', val: totalPts, color: '#60a5fa' },
